@@ -4,6 +4,7 @@ import fr.leplusultra.awesomeevents.model.event.Event;
 import fr.leplusultra.awesomeevents.model.user.User;
 import fr.leplusultra.awesomeevents.repositories.user.IUserRepository;
 import fr.leplusultra.awesomeevents.util.UserRole;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -23,6 +24,11 @@ public class EventRepositoryTest {
 
     @Autowired
     private IUserRepository userRepository;
+
+    @BeforeEach
+    void setUp() {
+        userRepository.deleteAll();
+    }
 
     @Test
     public void testSaveEventWithUser() {
