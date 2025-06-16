@@ -30,9 +30,7 @@ public class UserService {
         return userRepository.findById(id).get();
     }
 
-    @Transactional
-    public void createNew(User user) {
-        user.setCreatedAt(new Date());
-        userRepository.save(user);
+    public User findByEmail(String email){
+        return userRepository.findByEmail(email).orElse(null);
     }
 }

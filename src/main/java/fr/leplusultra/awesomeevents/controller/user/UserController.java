@@ -21,8 +21,14 @@ public class UserController {
     }
 
     @GetMapping
-    public String getAll(Model model) {
+    public String index(Model model) {
         model.addAttribute("users", userService.findAll());
-        return "index";
+        return "user/dashboard";
+    }
+
+    @GetMapping("dashboard")
+    public String dashboard(Model model) {
+        model.addAttribute("users", userService.findAll());
+        return "user/dashboard";
     }
 }
