@@ -1,4 +1,4 @@
-package fr.leplusultra.awesomeevents.repositorie.user;
+package fr.leplusultra.awesomeevents.repositories.user;
 
 import fr.leplusultra.awesomeevents.model.user.User;
 import org.springframework.data.jpa.repository.JpaRepository;

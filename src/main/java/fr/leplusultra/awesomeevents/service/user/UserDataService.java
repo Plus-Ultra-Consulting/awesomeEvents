@@ -1,7 +1,7 @@
 package fr.leplusultra.awesomeevents.service.user;
 
 import fr.leplusultra.awesomeevents.model.user.User;
-import fr.leplusultra.awesomeevents.repositorie.user.IUserRepository;
+import fr.leplusultra.awesomeevents.repositories.user.IUserRepository;
 import fr.leplusultra.awesomeevents.security.UserData;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;

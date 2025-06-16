@@ -1,4 +1,4 @@
-package fr.leplusultra.awesomeevents.repositorie.event;
+package fr.leplusultra.awesomeevents.repositories.event;
 
 import fr.leplusultra.awesomeevents.model.event.Event;
 import org.springframework.data.jpa.repository.JpaRepository;

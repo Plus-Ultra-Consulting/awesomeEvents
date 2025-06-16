@@ -2,8 +2,8 @@ package fr.leplusultra.awesomeevents.service.event;
 
 import fr.leplusultra.awesomeevents.dto.EventDTO;
 import fr.leplusultra.awesomeevents.model.event.Event;
-import fr.leplusultra.awesomeevents.repositorie.event.IEventRepository;
-import fr.leplusultra.awesomeevents.repositorie.user.IUserRepository;
+import fr.leplusultra.awesomeevents.repositories.event.IEventRepository;
+import fr.leplusultra.awesomeevents.repositories.user.IUserRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
