@@ -1,8 +1,7 @@
-package fr.leplusultra.awesomeevents.model.user;
+package fr.leplusultra.awesomeevents.dto;
 
-import fr.leplusultra.awesomeevents.model.event.Event;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import fr.leplusultra.awesomeevents.util.UserRole;
-import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
@@ -12,41 +11,35 @@ import lombok.*;
 import java.util.Date;
 import java.util.List;
 
-@Entity
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
 @Setter
 @ToString
-@Table(name = "users")
-public class User {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
-    @Column(name = "first_name")
+public class UserDTO {
+
     @NotEmpty
     @Size(min = 3, max = 20, message = "First name length must be between 3 and 20 characters")
     private String firstName;
-    @Column(name = "last_name")
+
     @NotEmpty
     @Size(min = 3, max = 20, message = "Last name length must be between 3 and 20 characters")
     private String lastName;
-    @Column(unique = true, nullable = false)
+
     @NotEmpty
     @Email
     private String email;
+
+    @JsonFormat(pattern = "MM/dd/yyyy HH:mm")
     @NotNull
-    @Column(name = "creation_time")
-    @Temporal(TemporalType.TIMESTAMP)
     private Date createdAt;
+
     @NotEmpty
-    @Size(min = 6, max = 100, message = "password length must be between 6 and 100 characters")
+    @Size(min = 6, max = 16, message = "password length must be between 6 and 16 characters")
     private String password;
 
     @NotNull
-    @Enumerated(EnumType.ORDINAL)
     private UserRole role;
 
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "user", cascade = CascadeType.ALL)
-    private List<Event> events;
+    private List<EventDTO> events;
 }
