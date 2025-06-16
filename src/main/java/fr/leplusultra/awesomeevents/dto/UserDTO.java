@@ -41,5 +41,6 @@ public class UserDTO {
     @NotNull
     private UserRole role;
 
+    //#Todo should we allow seeing all events of the user / saving the user with events to api ?
     private List<EventDTO> events;
 }

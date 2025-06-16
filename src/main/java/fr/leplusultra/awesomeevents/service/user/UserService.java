@@ -28,7 +28,7 @@ public class UserService {
     }
 
     @Transactional
-    public void register(User user){
+    public void register(User user) {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         user.setRole(UserRole.REGULAR);
         user.setCreatedAt(new Date());
@@ -51,7 +51,7 @@ public class UserService {
         userRepository.deleteById(id);
     }
 
-    public void save(User user){
+    public void save(User user) {
         userRepository.save(user);
     }
 

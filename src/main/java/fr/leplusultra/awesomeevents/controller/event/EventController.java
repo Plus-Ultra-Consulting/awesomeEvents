@@ -14,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Date;
 import java.util.List;
 
 @RestController
@@ -30,7 +31,6 @@ public class EventController {
 
     @PostMapping("/create")
     public ResponseEntity<HttpStatus> create(@RequestBody @Valid EventDTO eventDTO, BindingResult bindingResult) {
-
         Event event = eventService.convertToEvent(eventDTO);
         eventValidator.validate(event, bindingResult);
 
@@ -50,9 +50,7 @@ public class EventController {
 
     @PostMapping("/edit")
     public ResponseEntity<HttpStatus> editEvent(@RequestBody @Valid EventDTO eventDTO, BindingResult bindingResult) {
-
         //TODO get current user and update it's event.
-
         Event event = eventService.convertToEvent(eventDTO);
 
         eventValidator.validate(event, bindingResult);
@@ -74,7 +72,7 @@ public class EventController {
 
     @ExceptionHandler
     private ResponseEntity<ErrorResponse> handleException(EventException eventException) {
-        ErrorResponse response = new ErrorResponse(eventException.getMessage(), System.currentTimeMillis());
+        ErrorResponse response = new ErrorResponse(eventException.getMessage(), new Date());
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
 }

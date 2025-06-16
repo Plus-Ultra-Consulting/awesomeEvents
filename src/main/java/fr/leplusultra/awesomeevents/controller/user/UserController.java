@@ -14,6 +14,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Date;
+
 @RestController
 @RequestMapping("/user")
 public class UserController {
@@ -30,7 +32,6 @@ public class UserController {
 
     @PostMapping("registration")
     public ResponseEntity<HttpStatus> register(@RequestBody @Valid UserDTO userDTO, BindingResult bindingResult) {
-
         User user = userService.convertToUser(userDTO);
         userValidator.validate(user, bindingResult);
 
@@ -49,9 +50,7 @@ public class UserController {
 
     @PostMapping("/edit")
     public ResponseEntity<HttpStatus> editUser(@RequestBody @Valid UserDTO userDTO, BindingResult bindingResult) {
-
         //TODO get current user and update it.
-
         User user = userService.convertToUser(userDTO);
 
         userValidator.validate(user, bindingResult);
@@ -73,7 +72,7 @@ public class UserController {
 
     @ExceptionHandler
     private ResponseEntity<ErrorResponse> handleException(UserException userException) {
-        ErrorResponse response = new ErrorResponse(userException.getMessage(), System.currentTimeMillis());
+        ErrorResponse response = new ErrorResponse(userException.getMessage(), new Date());
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
 }
