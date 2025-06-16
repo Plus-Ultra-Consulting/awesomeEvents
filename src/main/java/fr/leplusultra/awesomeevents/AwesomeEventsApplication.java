@@ -1,4 +1,4 @@
-package fr.leplusultra.awesomeevents.artawesomeevents;
+package fr.leplusultra.awesomeevents;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

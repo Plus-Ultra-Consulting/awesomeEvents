@@ -1,4 +1,4 @@
-package fr.leplusultra.awesomeevents.artawesomeevents;
+package fr.leplusultra.awesomeevents;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
