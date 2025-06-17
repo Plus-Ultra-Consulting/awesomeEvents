@@ -15,7 +15,9 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/event")
@@ -30,7 +32,7 @@ public class EventController {
     }
 
     @PostMapping("/create")
-    public ResponseEntity<HttpStatus> create(@RequestBody @Valid EventDTO eventDTO, BindingResult bindingResult) {
+    public ResponseEntity<Map<String, Object>> create(@RequestBody @Valid EventDTO eventDTO, BindingResult bindingResult) {
         Event event = eventService.convertToEvent(eventDTO);
         eventValidator.validate(event, bindingResult);
 
@@ -38,8 +40,10 @@ public class EventController {
             Error.returnErrorToClient(bindingResult);
         }
 
-        eventService.createNew(event);
-        return ResponseEntity.ok(HttpStatus.OK);
+        int createdEventId = eventService.createNew(event);
+        Map<String, Object> response = new HashMap<>();
+        response.put("id", createdEventId);
+        return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
     @GetMapping

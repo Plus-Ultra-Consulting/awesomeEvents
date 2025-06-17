@@ -35,10 +35,10 @@ public class EventService {
     }
 
     @Transactional
-    public void createNew(Event event) {
+    public int createNew(Event event) {
         event.setCreatedAt(new Date());
         event.setUser(userRepository.findAll().get(0)); //TODO Change to match real user
-        eventRepository.save(event);
+        return eventRepository.save(event).getId();
     }
 
     public void save(Event event) {

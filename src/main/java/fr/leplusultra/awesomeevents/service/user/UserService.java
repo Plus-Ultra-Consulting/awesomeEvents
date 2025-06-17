@@ -28,11 +28,11 @@ public class UserService {
     }
 
     @Transactional
-    public void register(User user) {
+    public int register(User user) {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         user.setRole(UserRole.REGULAR);
         user.setCreatedAt(new Date());
-        userRepository.save(user);
+        return userRepository.save(user).getId();
     }
 
     public List<User> findAll() {

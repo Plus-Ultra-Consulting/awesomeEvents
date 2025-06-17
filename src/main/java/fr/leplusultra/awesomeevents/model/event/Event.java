@@ -2,8 +2,6 @@ package fr.leplusultra.awesomeevents.model.event;
 
 import fr.leplusultra.awesomeevents.model.user.User;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -20,23 +18,18 @@ public class Event {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-    @NotEmpty
     private String name;
-    @Column(name = "creation_time")
+    @Column(name = "creation_date_time")
     @Temporal(TemporalType.TIMESTAMP)
-    @DateTimeFormat(pattern = "MM/dd/yyyy HH:mm")
-    @NotNull
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm")
     private Date createdAt;
-    @NotEmpty
     private String place;
     @Column(name = "start_date_time")
     @Temporal(TemporalType.TIMESTAMP)
-    @DateTimeFormat(pattern = "MM/dd/yyyy HH:mm")
-    @NotNull
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm")
     private Date startAt;
 
     @JoinColumn(referencedColumnName = "id", name = "user_id")
     @ManyToOne
-    @NotNull
     private User user;
 }
