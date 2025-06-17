@@ -55,7 +55,7 @@ public class EventRepositoryTest {
         assertThat(savedEvent.getId()).isGreaterThan(0);
         assertThat(savedEvent.getUser().getId()).isEqualTo(savedUser.getId());
 
-        List<Event> events = eventRepository.findEventsByUserId(savedUser.getId()).orElse(null);
+        List<Event> events = eventRepository.findEventsByUserId(savedUser.getId());
         assertNotNull(events);
         assertThat(events).hasSize(1);
     }

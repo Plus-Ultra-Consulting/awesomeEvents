@@ -2,8 +2,10 @@ package fr.leplusultra.awesomeevents.service.event;
 
 import fr.leplusultra.awesomeevents.dto.EventDTO;
 import fr.leplusultra.awesomeevents.model.event.Event;
+import fr.leplusultra.awesomeevents.model.user.User;
 import fr.leplusultra.awesomeevents.repositories.event.IEventRepository;
 import fr.leplusultra.awesomeevents.repositories.user.IUserRepository;
+import fr.leplusultra.awesomeevents.util.exception.UserException;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -11,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Transactional(readOnly = true)
@@ -35,9 +38,15 @@ public class EventService {
     }
 
     @Transactional
-    public int createNew(Event event) {
+    public int createNew(Event event, int userId) {
         event.setCreatedAt(new Date());
-        event.setUser(userRepository.findAll().get(0)); //TODO Change to match real user
+        Optional<User> user = userRepository.findById(userId);
+
+        if (user.isEmpty()){
+            throw new UserException("Authenticated user not found");
+        }
+
+        event.setUser(user.get());
         return eventRepository.save(event).getId();
     }
 
@@ -55,5 +64,9 @@ public class EventService {
 
     public EventDTO convertToEventDTO(Event event) {
         return modelMapper.map(event, EventDTO.class);
+    }
+
+    public List<Event> findAllByUserId(int userId){
+        return eventRepository.findEventsByUserId(userId);
     }
 }

@@ -3,14 +3,18 @@ package fr.leplusultra.awesomeevents.controller.event;
 import fr.leplusultra.awesomeevents.dto.ErrorResponse;
 import fr.leplusultra.awesomeevents.dto.EventDTO;
 import fr.leplusultra.awesomeevents.model.event.Event;
+import fr.leplusultra.awesomeevents.model.user.User;
 import fr.leplusultra.awesomeevents.service.event.EventService;
+import fr.leplusultra.awesomeevents.service.user.UserService;
 import fr.leplusultra.awesomeevents.util.Error;
 import fr.leplusultra.awesomeevents.util.EventValidator;
 import fr.leplusultra.awesomeevents.util.exception.EventException;
+import fr.leplusultra.awesomeevents.util.exception.UserException;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,15 +28,27 @@ import java.util.Map;
 public class EventController {
     private final EventService eventService;
     private final EventValidator eventValidator;
+    private final UserService userService;
 
     @Autowired
-    public EventController(EventService eventService, EventValidator eventValidator) {
+    public EventController(EventService eventService, EventValidator eventValidator, UserService userService) {
         this.eventService = eventService;
         this.eventValidator = eventValidator;
+        this.userService = userService;
     }
 
     @PostMapping("/create")
-    public ResponseEntity<Map<String, Object>> create(@RequestBody @Valid EventDTO eventDTO, BindingResult bindingResult) {
+    public ResponseEntity<Map<String, Object>> create(@RequestBody @Valid EventDTO eventDTO, BindingResult bindingResult, Authentication authentication) {
+        User user = userService.findByEmail(authentication.getName());
+
+        if (user == null) {
+            throw new UserException("Authenticated user not found");
+        }
+
+        if (eventDTO.getId() != 0) {
+            throw new EventException("Invalid event creation request: ID must be 0 or null.");
+        }
+
         Event event = eventService.convertToEvent(eventDTO);
         eventValidator.validate(event, bindingResult);
 
@@ -40,15 +56,21 @@ public class EventController {
             Error.returnErrorToClient(bindingResult);
         }
 
-        int createdEventId = eventService.createNew(event);
+        int createdEventId = eventService.createNew(event, user.getId());
         Map<String, Object> response = new HashMap<>();
         response.put("id", createdEventId);
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
     @GetMapping
-    public List<EventDTO> getEvents() {
-        return eventService.findAll().stream().map(eventService::convertToEventDTO).toList(); //TODO return events of authed user
+    public List<EventDTO> getEvents(Authentication authentication) {
+        User user = userService.findByEmail(authentication.getName());
+
+        if (user == null) {
+            throw new UserException("Authenticated user not found");
+        }
+
+        return eventService.findAllByUserId(user.getId()).stream().map(eventService::convertToEventDTO).toList();
     }
 
 

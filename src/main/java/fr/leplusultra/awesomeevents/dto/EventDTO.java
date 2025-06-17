@@ -14,12 +14,16 @@ import java.util.Date;
 @ToString
 public class EventDTO {
     private int id;
+
     @NotEmpty
     private String name;
+
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm")
     private Date createdAt;
+
     @NotEmpty
     private String place;
+
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm")
     @NotNull
     private Date startAt;

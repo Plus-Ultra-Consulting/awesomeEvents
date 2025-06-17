@@ -1,5 +1,7 @@
 package fr.leplusultra.awesomeevents.config;
 
+import fr.leplusultra.awesomeevents.repositories.token.ITokenRepository;
+import fr.leplusultra.awesomeevents.security.JwtFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -13,16 +15,19 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @EnableWebSecurity
 @Configuration
 @EnableMethodSecurity
 public class SecurityConfig {
     private final UserDetailsService userDetailsService;
+    private final ITokenRepository tokenRepository;
 
     @Autowired
-    public SecurityConfig(UserDetailsService userDetailsService) {
+    public SecurityConfig(UserDetailsService userDetailsService, ITokenRepository tokenRepository) {
         this.userDetailsService = userDetailsService;
+        this.tokenRepository = tokenRepository;
     }
 
     @Bean
@@ -40,12 +45,11 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http.csrf(AbstractHttpConfigurer::disable); // disables security
-                /*.authorizeHttpRequests(auth -> auth
-                        //.requestMatchers("/admin").hasRole(UserRole.NETWORK_OWNER.name())
-                        .requestMatchers("/user/registration").permitAll()
-                        .requestMatchers("/**").authenticated())
-                .formLogin(AbstractAuthenticationFilterConfigurer::permitAll);*/
+        http
+                .csrf(AbstractHttpConfigurer::disable)
+                .authorizeHttpRequests(auth -> auth.requestMatchers("/user/registration", "/user/login").permitAll()
+                        .anyRequest().authenticated())
+                .addFilterBefore(new JwtFilter(tokenRepository), UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }

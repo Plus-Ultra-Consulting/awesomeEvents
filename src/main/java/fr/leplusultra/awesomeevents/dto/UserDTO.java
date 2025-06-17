@@ -15,16 +15,22 @@ import java.util.Date;
 @ToString
 public class UserDTO {
     private int id;
+
     @NotEmpty
     private String firstName;
+
     @NotEmpty
     private String lastName;
+
     @NotEmpty
     @Email
     private String email;
+
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm")
     private Date createdAt;
+
     @NotEmpty
     private String password;
+
     private UserRole role;
 }
