@@ -33,7 +33,7 @@ public class Event {
     @Temporal(TemporalType.TIMESTAMP)
     @DateTimeFormat(pattern = "MM/dd/yyyy HH:mm")
     @NotNull
-    private Date startDateTime;
+    private Date startAt;
 
     @JoinColumn(referencedColumnName = "id", name = "user_id")
     @ManyToOne

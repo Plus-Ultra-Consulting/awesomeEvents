@@ -16,9 +16,9 @@ public class EventDTO {
     @NotEmpty
     private String name;
     @JsonFormat(pattern = "MM/dd/yyyy HH:mm")
-    @NotEmpty
+    private Date createdAt;
     private String place;
     @JsonFormat(pattern = "MM/dd/yyyy HH:mm")
     @NotNull
-    private Date startDateTime;
+    private Date startAt;
 }
