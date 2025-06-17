@@ -15,6 +15,8 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/user")
@@ -30,8 +32,8 @@ public class UserController {
         this.userValidator = userValidator;
     }
 
-    @PostMapping("registration")
-    public ResponseEntity<HttpStatus> register(@RequestBody @Valid UserDTO userDTO, BindingResult bindingResult) {
+    @PostMapping("/registration")
+    public ResponseEntity<Map<String, Object>> register(@RequestBody @Valid UserDTO userDTO, BindingResult bindingResult) {
         User user = userService.convertToUser(userDTO);
         userValidator.validate(user, bindingResult);
 
@@ -39,13 +41,15 @@ public class UserController {
             Error.returnErrorToClient(bindingResult);
         }
 
-        registrationService.register(user);
-        return ResponseEntity.ok(HttpStatus.OK);
+        int createdEventId = registrationService.register(user);
+        Map<String, Object> response = new HashMap<>();
+        response.put("id", createdEventId);
+        return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
     @GetMapping
     public UserDTO getUser() {
-        return null; //TODO return authenticated user
+        return userService.convertToUserDTO(userService.findById(1)); //TODO return authenticated user
     }
 
     @PostMapping("/edit")
@@ -66,7 +70,7 @@ public class UserController {
     @PostMapping("/delete")
     public ResponseEntity<HttpStatus> deleteUser() {
         //TODO extract current session user id
-        userService.deleteById(0);
+        userService.deleteById(1);
         return ResponseEntity.ok(HttpStatus.OK);
     }
 
