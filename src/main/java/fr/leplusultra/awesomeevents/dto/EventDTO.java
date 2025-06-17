@@ -22,5 +22,5 @@ public class EventDTO {
     private String place;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm")
     @NotNull
-    private Date startDateTime;
+    private Date startAt;
 }

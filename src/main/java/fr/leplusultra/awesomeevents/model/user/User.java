@@ -26,7 +26,7 @@ public class User {
     private String lastName;
     @Column(unique = true, nullable = false)
     private String email;
-    @Column(name = "creation_time")
+    @Column(name = "creation_date_time")
     @Temporal(TemporalType.TIMESTAMP)
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm")
     private Date createdAt;
