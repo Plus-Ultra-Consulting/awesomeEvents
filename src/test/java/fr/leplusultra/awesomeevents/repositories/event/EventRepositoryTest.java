@@ -47,7 +47,7 @@ public class EventRepositoryTest {
         event.setName("eventName");
         event.setCreatedAt(new Date());
         event.setPlace("locationName");
-        event.setStartDateTime(new Date());
+        event.setCreatedAt(new Date());
         event.setUser(savedUser);
 
         Event savedEvent = eventRepository.save(event);
