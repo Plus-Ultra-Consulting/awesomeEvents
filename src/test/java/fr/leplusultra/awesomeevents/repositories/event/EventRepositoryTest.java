@@ -14,6 +14,7 @@ import java.util.Date;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @SpringBootTest
 @ActiveProfiles("test")
@@ -54,7 +55,8 @@ public class EventRepositoryTest {
         assertThat(savedEvent.getId()).isGreaterThan(0);
         assertThat(savedEvent.getUser().getId()).isEqualTo(savedUser.getId());
 
-        List<Event> events = eventRepository.findAll();
+        List<Event> events = eventRepository.findEventsByUserId(savedUser.getId()).orElse(null);
+        assertNotNull(events);
         assertThat(events).hasSize(1);
     }
 }
