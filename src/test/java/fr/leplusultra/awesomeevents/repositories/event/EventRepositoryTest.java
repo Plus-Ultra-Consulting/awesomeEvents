@@ -38,7 +38,6 @@ public class EventRepositoryTest {
         user.setLastName("Last");
         user.setEmail("first@example.com");
         user.setCreatedAt(new Date());
-        user.setPassword("securePassword123!");
         user.setRole(UserRole.NETWORK_OWNER);
 
         User savedUser = userRepository.save(user);

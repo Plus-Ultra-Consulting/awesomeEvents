@@ -32,7 +32,6 @@ public class UserRepositoryTest {
         user.setLastName("Last");
         user.setEmail("first@example.com");
         user.setCreatedAt(new Date());
-        user.setPassword("securePassword123!");
         user.setRole(UserRole.REGULAR);
 
         User saved = userRepository.save(user);

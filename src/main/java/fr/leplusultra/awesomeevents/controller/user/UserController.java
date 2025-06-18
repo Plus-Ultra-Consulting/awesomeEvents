@@ -85,17 +85,23 @@ public class UserController {
     }
 
     @PostMapping("/edit")
-    public ResponseEntity<HttpStatus> editUser(@RequestBody @Valid UserDTO userDTO, BindingResult bindingResult) {
-        //TODO get current user and update it.
-        User user = userService.convertToUser(userDTO);
+    public ResponseEntity<HttpStatus> editUser(@RequestBody @Valid UserDTO userDTO, BindingResult bindingResult, Authentication authentication) {
+        User user = userService.findByEmail(authentication.getName());
 
-        userValidator.validate(user, bindingResult);
+        User editedUser = userService.convertToUser(userDTO);
+        editedUser.setId(user.getId());
+
+        userValidator.validate(editedUser, bindingResult);
+
+        user.setFirstName(editedUser.getFirstName());
+        user.setLastName(editedUser.getLastName());
+        user.setEmail(editedUser.getEmail());
 
         if (bindingResult.hasErrors()) {
             Error.returnErrorToClient(bindingResult);
         }
 
-        registrationService.save(user);
+        userService.save(user);
         return ResponseEntity.ok(HttpStatus.OK);
     }
 
@@ -112,7 +118,7 @@ public class UserController {
     }
 
     @ExceptionHandler
-    private ResponseEntity<ErrorResponse> handleException(UserException userException) {
+    private ResponseEntity<ErrorResponse> handleUserException(UserException userException) {
         ErrorResponse response = new ErrorResponse(userException.getMessage(), new Date());
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }

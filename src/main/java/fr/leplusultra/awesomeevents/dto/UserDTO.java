@@ -29,8 +29,5 @@ public class UserDTO {
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm")
     private Date createdAt;
 
-    @NotEmpty
-    private String password;
-
     private UserRole role;
 }

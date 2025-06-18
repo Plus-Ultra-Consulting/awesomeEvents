@@ -29,7 +29,6 @@ public class UserService {
 
     @Transactional
     public int register(User user) {
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
         user.setRole(UserRole.REGULAR);
         user.setCreatedAt(new Date());
         return userRepository.save(user).getId();
@@ -47,10 +46,12 @@ public class UserService {
         return userRepository.findByEmail(email).orElse(null);
     }
 
+    @Transactional
     public void deleteById(int id) {
         userRepository.deleteById(id);
     }
 
+    @Transactional
     public void save(User user) {
         userRepository.save(user);
     }

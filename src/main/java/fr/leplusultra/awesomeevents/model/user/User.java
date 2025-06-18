@@ -36,8 +36,6 @@ public class User {
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm")
     private Date createdAt;
 
-    private String password;
-
     @Enumerated(EnumType.ORDINAL)
     private UserRole role;
 
