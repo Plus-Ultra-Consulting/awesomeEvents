@@ -4,7 +4,7 @@ import fr.leplusultra.awesomeevents.model.user.User;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 @Entity
 @Getter
@@ -23,7 +23,7 @@ public class Token {
 
     @Column(name = "expires_date_time", nullable = false)
     @Temporal(TemporalType.TIMESTAMP)
-    private Date expiresAt;
+    private LocalDateTime expiresAt;
 
     @OneToOne
     @JoinColumn(name = "user_id", referencedColumnName = "id", nullable = false, unique = true)

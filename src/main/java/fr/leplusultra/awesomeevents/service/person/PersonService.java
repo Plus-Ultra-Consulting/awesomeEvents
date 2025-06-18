@@ -8,7 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -25,7 +25,7 @@ public class PersonService {
 
     @Transactional
     public int createNew(Person person) {
-        person.setCreatedAt(new Date());
+        person.setCreatedAt(LocalDateTime.now());
 
         return personRepository.save(person).getId();
     }

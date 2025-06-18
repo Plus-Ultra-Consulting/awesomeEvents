@@ -17,7 +17,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Date;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -62,14 +63,15 @@ public class UserController {
         }
 
         String token = JwtUtil.generateToken(email);
-        Date expiresAt = new Date(System.currentTimeMillis() + JwtUtil.EXPIRATION_TIME);
+
+        LocalDateTime expiresAt = LocalDateTime.now().plusDays(JwtUtil.EXPIRATION_TIME);
 
         tokenService.saveOrUpdateToken(user, token, expiresAt);
 
         Map<String, Object> response = new HashMap<>();
         response.put("access_token", token);
         response.put("token_type", "Bearer");
-        response.put("expires_at", expiresAt);
+        response.put("expires_at", expiresAt.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")));
         return ResponseEntity.ok(response);
     }
 
@@ -119,7 +121,7 @@ public class UserController {
 
     @ExceptionHandler
     private ResponseEntity<ErrorResponse> handleUserException(UserException userException) {
-        ErrorResponse response = new ErrorResponse(userException.getMessage(), new Date());
+        ErrorResponse response = new ErrorResponse(userException.getMessage(), LocalDateTime.now());
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
 }

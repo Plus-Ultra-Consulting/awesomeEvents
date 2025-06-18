@@ -6,7 +6,7 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.*;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -27,7 +27,7 @@ public class UserDTO {
     private String email;
 
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm")
-    private Date createdAt;
+    private LocalDateTime createdAt;
 
     private UserRole role;
 }

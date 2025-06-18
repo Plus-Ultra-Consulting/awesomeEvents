@@ -8,7 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -33,7 +33,7 @@ public class EventService {
 
     @Transactional
     public int createNew(Event event) {
-        event.setCreatedAt(new Date());
+        event.setCreatedAt(LocalDateTime.now());
 
         return eventRepository.save(event).getId();
     }

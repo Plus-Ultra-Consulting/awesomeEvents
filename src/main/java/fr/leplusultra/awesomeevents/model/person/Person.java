@@ -5,7 +5,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.format.annotation.DateTimeFormat;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 @Entity
 @NoArgsConstructor
@@ -32,12 +32,12 @@ public class Person {
     @Column(name = "creation_date_time")
     @Temporal(TemporalType.TIMESTAMP)
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm")
-    private Date createdAt;
+    private LocalDateTime createdAt;
 
     @Column(name = "qrcode_use_date_time")
     @Temporal(TemporalType.TIMESTAMP)
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm")
-    private Date qrUsedAt;
+    private LocalDateTime qrUsedAt;
 
     @JoinColumn(referencedColumnName = "id", name = "event_id")
     @ManyToOne

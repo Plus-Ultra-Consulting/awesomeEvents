@@ -7,7 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 @Service
@@ -21,7 +21,7 @@ public class TokenService {
     }
 
     @Transactional
-    public void saveOrUpdateToken(User user, String tokenStr, Date expiresAt) {
+    public void saveOrUpdateToken(User user, String tokenStr, LocalDateTime expiresAt) {
         Optional<Token> existingTokenOpt = tokenRepository.findByUser(user);
 
         if (existingTokenOpt.isPresent()) {

@@ -5,7 +5,7 @@ import jakarta.validation.constraints.NotEmpty;
 import lombok.*;
 import org.springframework.format.annotation.DateTimeFormat;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -26,10 +26,10 @@ public class PersonDTO {
     private String email;
 
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm")
-    private Date createdAt;
+    private LocalDateTime createdAt;
 
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm")
-    private Date qrUsedAt;
+    private LocalDateTime qrUsedAt;
 
     private int eventId;
 }

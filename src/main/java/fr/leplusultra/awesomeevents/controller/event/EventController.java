@@ -19,7 +19,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -117,13 +117,13 @@ public class EventController {
 
     @ExceptionHandler
     private ResponseEntity<ErrorResponse> handleEventException(EventException eventException) {
-        ErrorResponse response = new ErrorResponse(eventException.getMessage(), new Date());
+        ErrorResponse response = new ErrorResponse(eventException.getMessage(), LocalDateTime.now());
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler
     private ResponseEntity<ErrorResponse> handleUserException(UserException userException) {
-        ErrorResponse response = new ErrorResponse(userException.getMessage(), new Date());
+        ErrorResponse response = new ErrorResponse(userException.getMessage(), LocalDateTime.now());
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
 }
