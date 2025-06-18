@@ -1,14 +1,17 @@
-package fr.leplusultra.awesomeevents.controller.event;
+package fr.leplusultra.awesomeevents.controller.person;
 
 import fr.leplusultra.awesomeevents.dto.ErrorResponse;
 import fr.leplusultra.awesomeevents.dto.EventDTO;
-import fr.leplusultra.awesomeevents.dto.EventsResponse;
+import fr.leplusultra.awesomeevents.dto.PeopleResponse;
+import fr.leplusultra.awesomeevents.dto.PersonDTO;
 import fr.leplusultra.awesomeevents.model.event.Event;
+import fr.leplusultra.awesomeevents.model.person.Person;
 import fr.leplusultra.awesomeevents.model.user.User;
 import fr.leplusultra.awesomeevents.service.event.EventService;
+import fr.leplusultra.awesomeevents.service.person.PersonService;
 import fr.leplusultra.awesomeevents.service.user.UserService;
 import fr.leplusultra.awesomeevents.util.Error;
-import fr.leplusultra.awesomeevents.util.EventValidator;
+import fr.leplusultra.awesomeevents.util.PersonValidator;
 import fr.leplusultra.awesomeevents.util.exception.EventException;
 import fr.leplusultra.awesomeevents.util.exception.UserException;
 import jakarta.validation.Valid;
@@ -24,95 +27,65 @@ import java.util.HashMap;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/event")
-public class EventController {
+@RequestMapping("/person")
+public class PersonController {
+    private final PersonService personService;
     private final EventService eventService;
-    private final EventValidator eventValidator;
     private final UserService userService;
+    private final PersonValidator personValidator;
 
     @Autowired
-    public EventController(EventService eventService, EventValidator eventValidator, UserService userService) {
+    public PersonController(PersonService personService, EventService eventService, UserService userService, PersonValidator personValidator) {
+        this.personService = personService;
         this.eventService = eventService;
-        this.eventValidator = eventValidator;
         this.userService = userService;
+        this.personValidator = personValidator;
     }
 
     @PostMapping("/create")
-    public ResponseEntity<Map<String, Object>> create(@RequestBody @Valid EventDTO eventDTO, BindingResult bindingResult, Authentication authentication) {
+    public ResponseEntity<Map<String, Object>> create(@RequestBody @Valid PersonDTO personDTO, BindingResult bindingResult, Authentication authentication) {
         User user = userService.findByEmail(authentication.getName());
+        Event event = eventService.findById(personDTO.getEventId());
 
         if (user == null) {
             throw new UserException("Authenticated user not found");
         }
 
-        eventDTO.setId(0);
-
-        Event event = eventService.convertToEvent(eventDTO);
-        eventValidator.validate(event, bindingResult);
-
-        if (bindingResult.hasErrors()) {
-            Error.returnErrorToClient(bindingResult);
-        }
-
-        event.setUser(user);
-
-        int createdEventId = eventService.createNew(event);
-        Map<String, Object> response = new HashMap<>();
-        response.put("id", createdEventId);
-        return new ResponseEntity<>(response, HttpStatus.CREATED);
-    }
-
-    @GetMapping
-    public EventsResponse getAll(Authentication authentication) {
-        User user = userService.findByEmail(authentication.getName());
-
-        if (user == null) {
-            throw new UserException("Authenticated user not found");
-        }
-
-        return new EventsResponse(eventService.findAllByUserId(user.getId()).stream().map(eventService::convertToEventDTO).toList());
-    }
-
-
-    @PostMapping("/edit")
-    public ResponseEntity<HttpStatus> edit(@RequestBody @Valid EventDTO eventDTO, BindingResult bindingResult, Authentication authentication) {
-        User user = userService.findByEmail(authentication.getName());
-        Event event = eventService.findById(eventDTO.getId());
-
-        if (user == null) {
-            throw new UserException("Authenticated user not found");
-        }
-
-        if (event == null || event.getUser() != user){
+        if (event == null || event.getUser() != user) {
             throw new EventException("Event not found for authenticated user");
         }
 
-        Event eventToEdit = eventService.convertToEvent(eventDTO);
-        event.setName(eventToEdit.getName());
-        event.setPlace(eventToEdit.getPlace());
-        event.setStartAt(eventToEdit.getStartAt());
+        personDTO.setId(0);
+        Person person = personService.convertToPerson(personDTO);
+        person.setEvent(event);
 
-        eventValidator.validate(event, bindingResult);
+        personValidator.validate(person, bindingResult);
 
         if (bindingResult.hasErrors()) {
             Error.returnErrorToClient(bindingResult);
         }
 
-        eventService.save(event);
-        return ResponseEntity.ok(HttpStatus.OK);
+        int createdPersonId = personService.createNew(person);
+        //#TODO send email to user, bcs he was added
+        Map<String, Object> response = new HashMap<>();
+        response.put("id", createdPersonId);
+        return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
-    @PostMapping("/delete")
-    public ResponseEntity<HttpStatus> delete(@RequestBody EventDTO eventDTO, Authentication authentication) {
+    @GetMapping()
+    public PeopleResponse getAll(@RequestBody EventDTO eventDTO, Authentication authentication) {
         User user = userService.findByEmail(authentication.getName());
         Event event = eventService.findById(eventDTO.getId());
 
-        if (event == null || event.getUser() != user){
-            throw new EventException("Event not found for current user");
+        if (user == null) {
+            throw new UserException("Authenticated user not found");
         }
 
-        eventService.deleteById(eventDTO.getId());
-        return ResponseEntity.ok(HttpStatus.OK);
+        if (event == null || event.getUser() != user) {
+            throw new EventException("Event not found for authenticated user");
+        }
+
+        return new PeopleResponse(personService.findAllByEventId(event.getId()).stream().map(personService::convertToPersonDTO).toList());
     }
 
     @ExceptionHandler

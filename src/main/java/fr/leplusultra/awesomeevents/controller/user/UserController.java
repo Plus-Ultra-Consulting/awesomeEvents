@@ -85,7 +85,7 @@ public class UserController {
     }
 
     @PostMapping("/edit")
-    public ResponseEntity<HttpStatus> editUser(@RequestBody @Valid UserDTO userDTO, BindingResult bindingResult, Authentication authentication) {
+    public ResponseEntity<HttpStatus> edit(@RequestBody @Valid UserDTO userDTO, BindingResult bindingResult, Authentication authentication) {
         User user = userService.findByEmail(authentication.getName());
 
         User editedUser = userService.convertToUser(userDTO);
@@ -106,7 +106,7 @@ public class UserController {
     }
 
     @PostMapping("/delete")
-    public ResponseEntity<HttpStatus> deleteUser(Authentication authentication) {
+    public ResponseEntity<HttpStatus> delete(Authentication authentication) {
         User user = userService.findByEmail(authentication.getName());
 
         if (user == null) {
