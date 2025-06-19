@@ -25,10 +25,19 @@ public class PersonValidator implements Validator {
     @Override
     public void validate(Object target, Errors errors) {
         Person person = (Person) target;
-        Person existingPerson = personService.findByEmail(person.getEmail());
+
+        if (person.getEmail() == null) {
+            errors.rejectValue("email", "", "Email cannot be null");
+        }
+
+        if (person.getEvent() == null){
+            errors.rejectValue("EventId", "", "EventId cannot be null");
+        }
+
+        Person existingPerson = personService.findByEmailAndEventId(person.getEmail(), person.getEvent().getId());
 
         if (existingPerson != null && existingPerson.getId() != person.getId()) {
-            errors.rejectValue("email", "", "Person with this email is already in database");
+            errors.rejectValue("email", "", "Person with this email is already registered for this event");
         }
     }
 }

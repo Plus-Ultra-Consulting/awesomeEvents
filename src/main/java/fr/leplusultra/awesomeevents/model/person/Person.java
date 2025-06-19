@@ -26,7 +26,7 @@ public class Person {
     @Column(name = "last_name")
     private String lastName;
 
-    @Column(nullable = false)
+    @Column()
     private String email;
 
     @Column(name = "creation_date_time")

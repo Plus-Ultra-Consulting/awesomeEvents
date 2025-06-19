@@ -8,5 +8,7 @@ import java.util.Optional;
 
 public interface IPersonRepository extends JpaRepository<Person, Integer> {
     Optional<Person> findByEmail(String email);
+    Optional<Person> findPersonByEmailAndEventId(String email, int id);
     List<Person> findPeopleByEventId(int eventId);
+    void deletePersonByIdAndEventId(int personId, int eventId);
 }

@@ -13,6 +13,7 @@ import fr.leplusultra.awesomeevents.service.user.UserService;
 import fr.leplusultra.awesomeevents.util.Error;
 import fr.leplusultra.awesomeevents.util.PersonValidator;
 import fr.leplusultra.awesomeevents.util.exception.EventException;
+import fr.leplusultra.awesomeevents.util.exception.PersonException;
 import fr.leplusultra.awesomeevents.util.exception.UserException;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,7 +43,7 @@ public class PersonController {
         this.personValidator = personValidator;
     }
 
-    @PostMapping("/create")
+    @PostMapping()
     public ResponseEntity<Map<String, Object>> create(@RequestBody @Valid PersonDTO personDTO, BindingResult bindingResult, Authentication authentication) {
         User user = userService.findByEmail(authentication.getName());
         Event event = eventService.findById(personDTO.getEventId());
@@ -66,7 +67,6 @@ public class PersonController {
         }
 
         int createdPersonId = personService.createNew(person);
-        //#TODO send email to user, bcs he was added
         Map<String, Object> response = new HashMap<>();
         response.put("id", createdPersonId);
         return new ResponseEntity<>(response, HttpStatus.CREATED);
@@ -88,6 +88,115 @@ public class PersonController {
         return new PeopleResponse(personService.findAllByEventId(event.getId()).stream().map(personService::convertToPersonDTO).toList());
     }
 
+    @PatchMapping()
+    public ResponseEntity<HttpStatus> edit(@RequestBody @Valid PersonDTO personDTO, BindingResult bindingResult, Authentication authentication) {
+        User user = userService.findByEmail(authentication.getName());
+
+        if (user == null) {
+            throw new UserException("Authenticated user not found");
+        }
+
+        Person person = personService.convertToPerson(personDTO);
+
+        if (person == null) {
+            throw new PersonException("Person not found");
+        }
+
+        Event event = person.getEvent();
+
+        if (event == null) {
+            throw new EventException("Person is not associated with any event");
+        }
+
+        if (!event.getUser().equals(user)) {
+            throw new EventException("Event not found for authenticated");
+        }
+
+        personValidator.validate(person, bindingResult);
+
+        if (bindingResult.hasErrors()) {
+            Error.returnErrorToClient(bindingResult);
+        }
+
+        personService.save(person);
+
+        return ResponseEntity.ok(HttpStatus.OK);
+    }
+
+    @DeleteMapping()
+    public ResponseEntity<HttpStatus> delete(@RequestBody PersonDTO personDTO, Authentication authentication) {
+        User user = userService.findByEmail(authentication.getName());
+
+        if (user == null) {
+            throw new UserException("Authenticated user not found");
+        }
+
+        Person person = personService.findById(personDTO.getId());
+
+        if (person == null) {
+            throw new PersonException("Person not found");
+        }
+
+        Event event = person.getEvent();
+
+
+        if (event == null) {
+            throw new EventException("Person is not associated with any event");
+        }
+
+        if (!event.getUser().equals(user)) {
+            throw new EventException("Event not found for authenticated");
+        }
+
+        if (!event.getPeople().contains(person)) {
+            throw new PersonException("Person does not belong to the event");
+        }
+
+        personService.deleteByIdAndEventId(person.getId(), event.getId());
+        return ResponseEntity.ok(HttpStatus.OK);
+    }
+
+    @PostMapping("/sendQR")
+    public ResponseEntity<HttpStatus> sendQRCode(@RequestBody PersonDTO personDTO, Authentication authentication) {
+        User user = userService.findByEmail(authentication.getName());
+
+        if (user == null) {
+            throw new UserException("Authenticated user not found");
+        }
+
+        Person person = personService.convertToPerson(personDTO);
+
+        if (person == null) {
+            throw new PersonException("Person not found");
+        }
+
+        Event event = person.getEvent();
+
+        if (event == null) {
+            throw new EventException("Person is not associated with any event");
+        }
+
+        if (!event.getUser().equals(user)) {
+            throw new EventException("Event not found for authenticated");
+        }
+
+        personService.getQRCodeDataByPerson(person);
+        //#TODO generate QR from data and send to email
+        return ResponseEntity.ok(HttpStatus.OK);
+    }
+
+    @PostMapping("/useQR")
+    public ResponseEntity<HttpStatus> useQRCode(Authentication authentication) {
+        User user = userService.findByEmail(authentication.getName());
+
+        if (user == null) {
+            throw new UserException("Authenticated user not found");
+        }
+
+        personService.markQRCodeAsUsed(personService.findById(1)); //#TODO get qr from data | (placeholder)
+        return ResponseEntity.ok(HttpStatus.OK);
+    }
+
     @ExceptionHandler
     private ResponseEntity<ErrorResponse> handleEventException(EventException eventException) {
         ErrorResponse response = new ErrorResponse(eventException.getMessage(), LocalDateTime.now());
@@ -97,6 +206,12 @@ public class PersonController {
     @ExceptionHandler
     private ResponseEntity<ErrorResponse> handleUserException(UserException userException) {
         ErrorResponse response = new ErrorResponse(userException.getMessage(), LocalDateTime.now());
+        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler
+    private ResponseEntity<ErrorResponse> handleUserException(PersonException personException) {
+        ErrorResponse response = new ErrorResponse(personException.getMessage(), LocalDateTime.now());
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
 }

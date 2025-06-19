@@ -34,6 +34,10 @@ public class PersonService {
         return personRepository.findByEmail(email).orElse(null);
     }
 
+    public Person findByEmailAndEventId(String email, int eventId) {
+        return personRepository.findByEmail(email).orElse(null);
+    }
+
     public String getQRCodeDataByPerson(Person person) {
         return String.valueOf(person.toString().hashCode()); //TODO discuss how to create qr code data
     }
@@ -46,7 +50,26 @@ public class PersonService {
         return modelMapper.map(person, PersonDTO.class);
     }
 
-    public List<Person> findAllByEventId(int eventId){
+    public List<Person> findAllByEventId(int eventId) {
         return personRepository.findPeopleByEventId(eventId);
+    }
+
+    @Transactional
+    public void deleteByIdAndEventId(int personId, int eventId) {
+        personRepository.deletePersonByIdAndEventId(personId, eventId);
+    }
+
+    public Person findById(int id) {
+        return personRepository.findById(id).orElse(null);
+    }
+
+    public void save(Person person) {
+        personRepository.save(person);
+    }
+
+    @Transactional
+    public void markQRCodeAsUsed(Person person) {
+        person.setQrUsedAt(LocalDateTime.now());
+        personRepository.save(person);
     }
 }

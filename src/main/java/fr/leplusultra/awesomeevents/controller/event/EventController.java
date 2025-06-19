@@ -37,7 +37,7 @@ public class EventController {
         this.userService = userService;
     }
 
-    @PostMapping("/create")
+    @PostMapping()
     public ResponseEntity<Map<String, Object>> create(@RequestBody @Valid EventDTO eventDTO, BindingResult bindingResult, Authentication authentication) {
         User user = userService.findByEmail(authentication.getName());
 
@@ -74,7 +74,7 @@ public class EventController {
     }
 
 
-    @PostMapping("/edit")
+    @PatchMapping()
     public ResponseEntity<HttpStatus> edit(@RequestBody @Valid EventDTO eventDTO, BindingResult bindingResult, Authentication authentication) {
         User user = userService.findByEmail(authentication.getName());
         Event event = eventService.findById(eventDTO.getId());
@@ -83,7 +83,7 @@ public class EventController {
             throw new UserException("Authenticated user not found");
         }
 
-        if (event == null || event.getUser() != user){
+        if (event == null || event.getUser() != user) {
             throw new EventException("Event not found for authenticated user");
         }
 
@@ -102,12 +102,12 @@ public class EventController {
         return ResponseEntity.ok(HttpStatus.OK);
     }
 
-    @PostMapping("/delete")
+    @DeleteMapping()
     public ResponseEntity<HttpStatus> delete(@RequestBody EventDTO eventDTO, Authentication authentication) {
         User user = userService.findByEmail(authentication.getName());
         Event event = eventService.findById(eventDTO.getId());
 
-        if (event == null || event.getUser() != user){
+        if (event == null || event.getUser() != user) {
             throw new EventException("Event not found for current user");
         }
 
