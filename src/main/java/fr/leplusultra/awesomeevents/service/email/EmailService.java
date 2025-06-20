@@ -6,13 +6,15 @@ import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Profile;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-@Transactional(readOnly = true)
+@Profile("!test")
 @Service
+@Transactional(readOnly = true)
 public class EmailService {
     private final JavaMailSender mailSender;
     @Value("${mail.sender.address}")
@@ -29,7 +31,8 @@ public class EmailService {
         MimeMessage message = mailSender.createMimeMessage();
         MimeMessageHelper messageHelper = new MimeMessageHelper(message, true);
         messageHelper.setFrom(emailSenderAddress);
-        messageHelper.setTo(person.getEmail());
+        //messageHelper.setTo(person.getEmail());
+        messageHelper.setTo("andreyhilj+awesomeEventsDev@gmail.com");
         messageHelper.setSubject("Invitation to " + event.getName());
 
         String htmlMsg = "<h3>You were invited to attend" + event.getName() +
