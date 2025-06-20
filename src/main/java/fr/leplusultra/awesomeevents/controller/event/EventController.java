@@ -73,6 +73,26 @@ public class EventController {
         return new EventsResponse(eventService.findAllByUserId(user.getId()).stream().map(eventService::convertToEventDTO).toList());
     }
 
+    @GetMapping("/{id}")
+    public EventDTO getOne(@PathVariable int id, Authentication authentication) {
+        User user = userService.findByEmail(authentication.getName());
+
+        if (user == null) {
+            throw new UserException("Authenticated user not found");
+        }
+
+        if (id == 0){
+            throw new EventException("Event Id must be provided");
+        }
+
+        Event event = eventService.findById(id);
+
+        if (!event.getUser().equals(user)){
+            throw new EventException("Event not found for authenticated user");
+        }
+
+        return eventService.convertToEventDTO(event);
+    }
 
     @PatchMapping()
     public ResponseEntity<HttpStatus> edit(@RequestBody @Valid EventDTO eventDTO, BindingResult bindingResult, Authentication authentication) {

@@ -1,7 +1,6 @@
 package fr.leplusultra.awesomeevents.controller.person;
 
 import fr.leplusultra.awesomeevents.dto.ErrorResponse;
-import fr.leplusultra.awesomeevents.dto.EventDTO;
 import fr.leplusultra.awesomeevents.dto.PeopleResponse;
 import fr.leplusultra.awesomeevents.dto.PersonDTO;
 import fr.leplusultra.awesomeevents.model.event.Event;
@@ -72,10 +71,10 @@ public class PersonController {
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
-    @GetMapping()
-    public PeopleResponse getAll(@RequestBody EventDTO eventDTO, Authentication authentication) {
+    @GetMapping("/{eventId}/people")
+    public PeopleResponse getAll(@PathVariable int eventId, Authentication authentication) {
         User user = userService.findByEmail(authentication.getName());
-        Event event = eventService.findById(eventDTO.getId());
+        Event event = eventService.findById(eventId);
 
         if (user == null) {
             throw new UserException("Authenticated user not found");
@@ -88,6 +87,27 @@ public class PersonController {
         return new PeopleResponse(personService.findAllByEventId(event.getId()).stream().map(personService::convertToPersonDTO).toList());
     }
 
+    @GetMapping("/{eventId}/{id}")
+    public PersonDTO getOne(@PathVariable int eventId, @PathVariable int id, Authentication authentication) {
+        User user = userService.findByEmail(authentication.getName());
+        Event event = eventService.findById(eventId);
+        Person person = personService.findById(id);
+
+        if (user == null) {
+            throw new UserException("Authenticated user not found");
+        }
+
+        if (event == null || event.getUser() != user) {
+            throw new EventException("Event not found for authenticated user");
+        }
+
+        if (person == null || person.getEvent() != event) {
+            throw new EventException("Person not found for authenticated user's event");
+        }
+
+        return personService.convertToPersonDTO(person);
+    }
+
     @PatchMapping()
     public ResponseEntity<HttpStatus> edit(@RequestBody @Valid PersonDTO personDTO, BindingResult bindingResult, Authentication authentication) {
         User user = userService.findByEmail(authentication.getName());
@@ -96,11 +116,13 @@ public class PersonController {
             throw new UserException("Authenticated user not found");
         }
 
-        Person person = personService.convertToPerson(personDTO);
+        Person personEdited = personService.convertToPerson(personDTO);
 
-        if (person == null) {
+        if (personEdited == null) {
             throw new PersonException("Person not found");
         }
+
+        Person person = personService.findById(personDTO.getId());
 
         Event event = person.getEvent();
 
@@ -109,14 +131,18 @@ public class PersonController {
         }
 
         if (!event.getUser().equals(user)) {
-            throw new EventException("Event not found for authenticated");
+            throw new EventException("Event not found for authenticated user");
         }
 
-        personValidator.validate(person, bindingResult);
+        personValidator.validate(personEdited, bindingResult);
 
         if (bindingResult.hasErrors()) {
             Error.returnErrorToClient(bindingResult);
         }
+
+        person.setFirstName(personEdited.getFirstName());
+        person.setLastName(personEdited.getLastName());
+        person.setEmail(personEdited.getEmail());
 
         personService.save(person);
 

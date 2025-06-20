@@ -51,18 +51,19 @@ public class PersonService {
     }
 
     public List<Person> findAllByEventId(int eventId) {
-        return personRepository.findPeopleByEventId(eventId);
+        return personRepository.findAllByEventId(eventId);
     }
 
     @Transactional
     public void deleteByIdAndEventId(int personId, int eventId) {
-        personRepository.deletePersonByIdAndEventId(personId, eventId);
+        personRepository.deleteByIdAndEventId(personId, eventId);
     }
 
     public Person findById(int id) {
         return personRepository.findById(id).orElse(null);
     }
 
+    @Transactional
     public void save(Person person) {
         personRepository.save(person);
     }
