@@ -4,3 +4,27 @@ spring:
     driver-class-name: org.h2.Driver
     username: sa
     password:
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.H2Dialect
+        show_sql: true
+        format_sql: true
+    hibernate:
+      ddl-auto: create-drop
+
+  mail:
+    host: mail.example.host
+    port: 587
+    username: myuser
+    password: secret
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+
+mail:
+  sender:
+    address: test@example.com
