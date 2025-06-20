@@ -29,7 +29,9 @@ public class PersonDTO {
     private LocalDateTime createdAt;
 
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm")
-    private LocalDateTime qrUsedAt;
+    private LocalDateTime securityCodeActivatedAt;
 
     private int eventId;
+
+    private String securityCode;
 }

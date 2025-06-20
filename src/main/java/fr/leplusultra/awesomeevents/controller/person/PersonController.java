@@ -6,6 +6,7 @@ import fr.leplusultra.awesomeevents.dto.PersonDTO;
 import fr.leplusultra.awesomeevents.model.event.Event;
 import fr.leplusultra.awesomeevents.model.person.Person;
 import fr.leplusultra.awesomeevents.model.user.User;
+import fr.leplusultra.awesomeevents.service.email.EmailService;
 import fr.leplusultra.awesomeevents.service.event.EventService;
 import fr.leplusultra.awesomeevents.service.person.PersonService;
 import fr.leplusultra.awesomeevents.service.user.UserService;
@@ -14,6 +15,7 @@ import fr.leplusultra.awesomeevents.util.PersonValidator;
 import fr.leplusultra.awesomeevents.util.exception.EventException;
 import fr.leplusultra.awesomeevents.util.exception.PersonException;
 import fr.leplusultra.awesomeevents.util.exception.UserException;
+import jakarta.mail.MessagingException;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -33,13 +35,15 @@ public class PersonController {
     private final EventService eventService;
     private final UserService userService;
     private final PersonValidator personValidator;
+    private final EmailService emailService;
 
     @Autowired
-    public PersonController(PersonService personService, EventService eventService, UserService userService, PersonValidator personValidator) {
+    public PersonController(PersonService personService, EventService eventService, UserService userService, PersonValidator personValidator, EmailService emailService) {
         this.personService = personService;
         this.eventService = eventService;
         this.userService = userService;
         this.personValidator = personValidator;
+        this.emailService = emailService;
     }
 
     @PostMapping()
@@ -58,6 +62,15 @@ public class PersonController {
         personDTO.setId(0);
         Person person = personService.convertToPerson(personDTO);
         person.setEvent(event);
+
+        String code = personService.generateSecurityCode();
+
+        while (personService.findBySecurityCode(code) != null) {
+            code = personService.generateSecurityCode();
+        }
+
+        person.setSecurityCode(code);
+        person.setSecurityCodeActivatedAt(null);
 
         personValidator.validate(person, bindingResult);
 
@@ -182,15 +195,15 @@ public class PersonController {
         return ResponseEntity.ok(HttpStatus.OK);
     }
 
-    @PostMapping("/sendQR")
-    public ResponseEntity<HttpStatus> sendQRCode(@RequestBody PersonDTO personDTO, Authentication authentication) {
+    @PostMapping("/sendSecurityCode")
+    public ResponseEntity<HttpStatus> sendSecurityCodeMail(@RequestBody PersonDTO personDTO, Authentication authentication) {
         User user = userService.findByEmail(authentication.getName());
 
         if (user == null) {
             throw new UserException("Authenticated user not found");
         }
 
-        Person person = personService.convertToPerson(personDTO);
+        Person person = personService.findById(personDTO.getId());
 
         if (person == null) {
             throw new PersonException("Person not found");
@@ -206,20 +219,34 @@ public class PersonController {
             throw new EventException("Event not found for authenticated");
         }
 
-        personService.getQRCodeDataByPerson(person);
-        //#TODO generate QR from data and send to email
+
+        try {
+            emailService.sendEmailWithSecurityCode(person);
+        } catch (MessagingException e) {
+            throw new PersonException("Failed to send the email");
+        }
         return ResponseEntity.ok(HttpStatus.OK);
     }
 
-    @PostMapping("/useQR")
-    public ResponseEntity<HttpStatus> useQRCode(Authentication authentication) {
+    @PostMapping("/{code}/useCode")
+    public ResponseEntity<HttpStatus> useQRCode(@PathVariable String code, Authentication authentication) {
         User user = userService.findByEmail(authentication.getName());
 
         if (user == null) {
             throw new UserException("Authenticated user not found");
         }
 
-        personService.markQRCodeAsUsed(personService.findById(1)); //#TODO get qr from data | (placeholder)
+        Person person = personService.findBySecurityCode(code);
+
+        if (person == null || person.getEvent().getUser() != user) {
+            throw new PersonException("Security code invalid");
+        }
+
+        if (person.getSecurityCodeActivatedAt() != null) {
+            throw new PersonException("Security code was already used");
+        }
+
+        personService.markQRCodeAsUsed(person);
         return ResponseEntity.ok(HttpStatus.OK);
     }
 

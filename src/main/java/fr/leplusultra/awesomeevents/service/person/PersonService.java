@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.security.SecureRandom;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -37,11 +38,6 @@ public class PersonService {
     public Person findByEmailAndEventId(String email, int eventId) {
         return personRepository.findByEmail(email).orElse(null);
     }
-
-    public String getQRCodeDataByPerson(Person person) {
-        return String.valueOf(person.toString().hashCode()); //TODO discuss how to create qr code data
-    }
-
     public Person convertToPerson(PersonDTO personDTO) {
         return modelMapper.map(personDTO, Person.class);
     }
@@ -70,7 +66,21 @@ public class PersonService {
 
     @Transactional
     public void markQRCodeAsUsed(Person person) {
-        person.setQrUsedAt(LocalDateTime.now());
+        person.setSecurityCodeActivatedAt(LocalDateTime.now());
         personRepository.save(person);
+    }
+
+    public Person findBySecurityCode(String code){
+        return personRepository.findBySecurityCode(code).orElse(null);
+    }
+
+    public String generateSecurityCode(){
+        String chars = "1234567890ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        SecureRandom random = new SecureRandom();
+        StringBuilder code = new StringBuilder();
+        for (int i = 0; i < 6; i++){
+            code.append(chars.charAt(random.nextInt(chars.length())));
+        }
+        return code.toString();
     }
 }

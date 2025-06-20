@@ -37,9 +37,12 @@ public class Person {
     @Column(name = "qrcode_use_date_time")
     @Temporal(TemporalType.TIMESTAMP)
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm")
-    private LocalDateTime qrUsedAt;
+    private LocalDateTime securityCodeActivatedAt;
 
     @JoinColumn(referencedColumnName = "id", name = "event_id")
     @ManyToOne
     private Event event;
+
+    @Column(name = "security_code", unique = true)
+    private String securityCode;
 }

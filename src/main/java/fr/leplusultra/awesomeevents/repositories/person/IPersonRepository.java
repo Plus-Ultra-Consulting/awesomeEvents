@@ -15,4 +15,5 @@ public interface IPersonRepository extends JpaRepository<Person, Integer> {
     @Modifying
     @Query("DELETE FROM Person p WHERE p.id = :personId AND p.event.id = :eventId")
     void deleteByIdAndEventId(int personId, int eventId);
+    Optional<Person> findBySecurityCode(String code);
 }
