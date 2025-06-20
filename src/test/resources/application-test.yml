@@ -4,16 +4,3 @@ spring:
     driver-class-name: org.h2.Driver
     username: sa
     password:
-
-  mail:
-    host: smtp.test.local
-    port: 1025
-    username: test@example.com
-    password: testpass
-    properties:
-      mail.smtp.auth: false
-      mail.smtp.starttls.enable: false
-
-mail:
-  sender:
-    address: test@example.com

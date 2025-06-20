@@ -2,7 +2,7 @@
 
 ## Getting started
 
-1. Create and configure file at `src/main/resources/application.properties` (Use template at `src/main/resources/example.properties`)
+1. Create and configure file at `src/main/resources/application.properties` (Use template at `src/main/resources/application-example.properties`)
 
 2. Run:
 ```bash

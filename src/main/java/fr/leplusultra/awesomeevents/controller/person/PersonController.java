@@ -228,15 +228,15 @@ public class PersonController {
         return ResponseEntity.ok(HttpStatus.OK);
     }
 
-    @PostMapping("/{code}/useCode")
-    public ResponseEntity<HttpStatus> useQRCode(@PathVariable String code, Authentication authentication) {
+    @PostMapping("/useSecurityCode")
+    public ResponseEntity<HttpStatus> useQRCode(@RequestBody PersonDTO personDTO, Authentication authentication) {
         User user = userService.findByEmail(authentication.getName());
 
         if (user == null) {
             throw new UserException("Authenticated user not found");
         }
 
-        Person person = personService.findBySecurityCode(code);
+        Person person = personService.findBySecurityCode(personDTO.getSecurityCode());
 
         if (person == null || person.getEvent().getUser() != user) {
             throw new PersonException("Security code invalid");

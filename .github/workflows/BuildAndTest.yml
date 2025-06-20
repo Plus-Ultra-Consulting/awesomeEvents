@@ -21,4 +21,4 @@ jobs:
           distribution: 'temurin'
 
       - name: Build and run tests with Maven
-        run: mvn clean test -Dspring.profiles.active=test
+        run: mvn clean test
