@@ -28,3 +28,11 @@ spring:
 mail:
   sender:
     address: test@example.com
+
+qrcode:
+  size: 500
+  image:
+    format: jpg
+
+frontend:
+  url: http://localhost:5173
