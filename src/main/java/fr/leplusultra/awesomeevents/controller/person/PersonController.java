@@ -1,5 +1,6 @@
 package fr.leplusultra.awesomeevents.controller.person;
 
+import com.google.zxing.WriterException;
 import fr.leplusultra.awesomeevents.dto.ErrorResponse;
 import fr.leplusultra.awesomeevents.dto.PeopleResponse;
 import fr.leplusultra.awesomeevents.dto.PersonDTO;
@@ -24,6 +25,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
@@ -105,6 +107,27 @@ public class PersonController {
         User user = userService.findByEmail(authentication.getName());
         Event event = eventService.findById(eventId);
         Person person = personService.findById(id);
+
+        if (user == null) {
+            throw new UserException("Authenticated user not found");
+        }
+
+        if (event == null || event.getUser() != user) {
+            throw new EventException("Event not found for authenticated user");
+        }
+
+        if (person == null || person.getEvent() != event) {
+            throw new EventException("Person not found for authenticated user's event");
+        }
+
+        return personService.convertToPersonDTO(person);
+    }
+
+    @GetMapping("/{eventId}/securityCode/{securityCode}")
+    public PersonDTO getOne(@PathVariable int eventId, @PathVariable String securityCode, Authentication authentication) {
+        User user = userService.findByEmail(authentication.getName());
+        Event event = eventService.findById(eventId);
+        Person person = personService.findBySecurityCode(securityCode);
 
         if (user == null) {
             throw new UserException("Authenticated user not found");
@@ -222,7 +245,7 @@ public class PersonController {
 
         try {
             emailService.sendEmailWithSecurityCode(person);
-        } catch (MessagingException e) {
+        } catch (MessagingException | WriterException | IOException e) {
             throw new PersonException("Failed to send the email");
         }
         return ResponseEntity.ok(HttpStatus.OK);
