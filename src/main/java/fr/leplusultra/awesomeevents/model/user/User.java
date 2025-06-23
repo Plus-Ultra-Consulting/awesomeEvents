@@ -29,6 +29,7 @@ public class User {
     private String lastName;
 
     @Column(unique = true, nullable = false)
+    @Setter(AccessLevel.NONE)
     private String email;
 
     @Column(name = "creation_date_time")
@@ -44,4 +45,8 @@ public class User {
 
     @OneToOne(fetch = FetchType.LAZY, mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private Token token;
+
+    public void setEmail(String email) {
+        this.email = email != null ? email.toLowerCase() : null;
+    }
 }

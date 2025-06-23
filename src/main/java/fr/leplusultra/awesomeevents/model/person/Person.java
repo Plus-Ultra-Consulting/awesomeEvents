@@ -27,6 +27,7 @@ public class Person {
     private String lastName;
 
     @Column()
+    @Setter(AccessLevel.NONE)
     private String email;
 
     @Column(name = "creation_date_time")
@@ -45,4 +46,8 @@ public class Person {
 
     @Column(name = "security_code", unique = true)
     private String securityCode;
+
+    public void setEmail(String email) {
+        this.email = email != null ? email.toLowerCase() : null;
+    }
 }

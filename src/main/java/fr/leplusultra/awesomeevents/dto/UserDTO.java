@@ -24,10 +24,15 @@ public class UserDTO {
 
     @NotEmpty
     @Email
+    @Setter(AccessLevel.NONE)
     private String email;
 
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm")
     private LocalDateTime createdAt;
 
     private UserRole role;
+
+    public void setEmail(String email) {
+        this.email = email != null ? email.toLowerCase() : null;
+    }
 }

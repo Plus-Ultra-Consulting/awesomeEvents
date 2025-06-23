@@ -23,6 +23,7 @@ public class PersonDTO {
 
     @Email
     @NotEmpty
+    @Setter(AccessLevel.NONE)
     private String email;
 
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm")
@@ -34,4 +35,8 @@ public class PersonDTO {
     private int eventId;
 
     private String securityCode;
+
+    public void setEmail(String email) {
+        this.email = email != null ? email.toLowerCase() : null;
+    }
 }
