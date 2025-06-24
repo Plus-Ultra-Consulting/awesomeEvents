@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Getter
 @Setter
-@ToString
+@ToString(exclude = "event")
 @EqualsAndHashCode
 @Table(name = "people")
 public class Person {

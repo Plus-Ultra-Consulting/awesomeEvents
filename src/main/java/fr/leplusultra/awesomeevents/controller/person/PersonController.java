@@ -170,6 +170,8 @@ public class PersonController {
             throw new EventException("Event not found for authenticated user");
         }
 
+        personEdited.setEvent(event);
+
         personValidator.validate(personEdited, bindingResult);
 
         if (bindingResult.hasErrors()) {

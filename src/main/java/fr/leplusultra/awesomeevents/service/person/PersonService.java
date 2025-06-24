@@ -36,7 +36,7 @@ public class PersonService {
     }
 
     public Person findByEmailAndEventId(String email, int eventId) {
-        return personRepository.findByEmail(email).orElse(null);
+        return personRepository.findByEmailAndEventId(email, eventId).orElse(null);
     }
     public Person convertToPerson(PersonDTO personDTO) {
         return modelMapper.map(personDTO, Person.class);

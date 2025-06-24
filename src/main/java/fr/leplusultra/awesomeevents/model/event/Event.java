@@ -14,7 +14,7 @@ import java.util.List;
 @AllArgsConstructor
 @Getter
 @Setter
-@ToString
+@ToString(exclude = "people")
 @Table(name = "events")
 public class Event {
     @Id

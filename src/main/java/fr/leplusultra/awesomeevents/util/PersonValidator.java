@@ -1,7 +1,6 @@
 package fr.leplusultra.awesomeevents.util;
 
 import fr.leplusultra.awesomeevents.model.person.Person;
-import fr.leplusultra.awesomeevents.model.user.User;
 import fr.leplusultra.awesomeevents.service.person.PersonService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -19,7 +18,7 @@ public class PersonValidator implements Validator {
 
     @Override
     public boolean supports(Class<?> clazz) {
-        return User.class.equals(clazz);
+        return Person.class.equals(clazz);
     }
 
     @Override
@@ -30,8 +29,9 @@ public class PersonValidator implements Validator {
             errors.rejectValue("email", "", "Email cannot be null");
         }
 
-        if (person.getEvent() == null){
-            errors.rejectValue("EventId", "", "EventId cannot be null");
+        if (person.getEvent() == null || person.getEvent().getId() == 0){
+            errors.rejectValue("eventId", "", "eventId cannot be null");
+            return;
         }
 
         Person existingPerson = personService.findByEmailAndEventId(person.getEmail(), person.getEvent().getId());
