@@ -33,7 +33,7 @@ Except the variables that are marked optional and have default values.
 
 ```bash
 # Server
-SERVER_PORT # Port where the server is run, usually: 8080
+SERVER_PORT # Port where the server is run (default: 8080), example: 8080
 
 # Database
 DB_DRIVER # Driver of used database, example: org.postgresql.Driver
