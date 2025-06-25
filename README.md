@@ -199,13 +199,13 @@ docker-compose logs -f
 
 ### Environment configuration
 
-In order to set up the environment, you should do it manually
-example commands to do it:
+In order to set up the environment, you can do it manually.
+These example commands to do it:
 - cmd: `set VAR_NAME=value`
 - bash: `export VAR_NAME=value`
 - powershell: `$env:VAR_NAME="value"`
 
-or Create `.env` file in the main folder,
+Or you can create `.env` file in the main folder,
 and configure everything there.
 
 #### Environment variables
