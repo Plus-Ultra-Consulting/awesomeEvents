@@ -19,6 +19,8 @@ Make sure you have the following installed:
 - [Docker](https://docks.docker.com/get-docker/)
 - [Docker Compose](https://docs.docker.com/compose/)
 
+---
+
 ### Setup
 
 In a new folder, create `compose.yaml` with the following content
@@ -88,6 +90,8 @@ MAIL_SENDER=user@example.com
 FRONTEND_URL=http://localhost:5173
 ```
 
+---
+
 ### Deploy
 
 Finally, run following command in the terminal / CLI / etc. to start the server:
@@ -110,9 +114,13 @@ If you want to access logs, run:
 docker-compose logs -f
 ```
 
+---
+
 ## Manual build
 
 In order to build the image manually using the source code, you must follow next instructions.
+
+---
 
 ### Requirements
 
@@ -121,7 +129,11 @@ Make sure you have the following installed:
 - [Docker Compose](https://docs.docker.com/compose/)
 - [Java SDK 17](https://openjdk.org/projects/jdk/17/)
 
+---
+
 ### Building the software
+
+---
 
 #### Building jar file
 
@@ -137,6 +149,8 @@ Windows
 mvnw.cmd clean package
 ```
 
+---
+
 #### Building docker image
 
 To build docker image from jar file, run:
@@ -144,6 +158,8 @@ To build docker image from jar file, run:
 ```bash
 docker compose build
 ```
+
+---
 
 ###  Setup
 
@@ -173,6 +189,8 @@ MAIL_SENDER=user@example.com
 FRONTEND_URL=http://localhost:5173
 ```
 
+---
+
 ### Deploy
 
 Finally, run following command in the terminal / CLI / etc to start the server:
@@ -195,12 +213,16 @@ If you want to access logs, run:
 docker-compose logs -f
 ```
 
+---
+
 ## Additional info
+
+---
 
 ### Environment configuration
 
 In order to set up the environment, you can do it manually.
-These example commands to do it:
+These are the example commands to do it:
 - cmd: `set VAR_NAME=value`
 - bash: `export VAR_NAME=value`
 - powershell: `$env:VAR_NAME="value"`
@@ -236,3 +258,5 @@ Except the variables that have default values.
 | QRCODE_SIZE          | Size of generated QR-Codes                                      | 500                                     | 500     |
 | QRCODE_IMAGE_FORMAT  | Format of QR-Code image                                         | jpg                                     | jpg     |
 | FRONTEND_URL         | URL to your frontend server                                     | http://localhost:3000                   | -       |
+
+---
