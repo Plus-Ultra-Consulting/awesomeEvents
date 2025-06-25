@@ -6,7 +6,7 @@ A containerized Spring Boot backend application for managing events, with email 
 
 ## Quick start
 
-Starting the application from public docker image
+Starting the application from a public docker image
 
 > Docker Image:
 > **`cotezzlapyx/awesome-events:latest`**
@@ -94,7 +94,7 @@ FRONTEND_URL=http://localhost:5173
 
 ### Deploy
 
-Finally, run following command in the terminal / CLI / etc. to start the server:
+Finally, run the following command in the terminal / CLI / etc. to start the server:
 
 ```bash
 docker compose up -d
@@ -118,7 +118,7 @@ docker-compose logs -f
 
 ## Manual build
 
-In order to build the image manually using the source code, you must follow next instructions.
+To build the image manually using the source code, you must follow the next instructions.
 
 ---
 
@@ -135,7 +135,7 @@ Make sure you have the following installed:
 
 ---
 
-#### Building jar file
+#### Building a jar file
 
 To build a jar file, run:
 
@@ -153,7 +153,7 @@ mvnw.cmd clean package
 
 #### Building docker image
 
-To build docker image from jar file, run:
+To build a docker image from a jar file, run:
 
 ```bash
 docker compose build
@@ -193,7 +193,7 @@ FRONTEND_URL=http://localhost:5173
 
 ### Deploy
 
-Finally, run following command in the terminal / CLI / etc to start the server:
+Finally, run the following command in the terminal / CLI / etc. to start the server:
 
 ```bash
 docker compose up -d
@@ -221,7 +221,7 @@ docker-compose logs -f
 
 ### Environment configuration
 
-In order to set up the environment, you can do it manually.
+To set up the environment manually, you can use these commands.
 These are the example commands to do it:
 - cmd: `set VAR_NAME=value`
 - bash: `export VAR_NAME=value`
@@ -232,7 +232,7 @@ and configure everything there.
 
 #### Environment variables
 
-Some variables must be set up for the program to work properly.
+Some variables must be set up for the application to work properly.
 Except the variables that have default values.
 
 | Variable             | Description                                                     | Example                                 | Default |
