@@ -45,8 +45,8 @@ public class EmailService {
         MimeMessage message = mailSender.createMimeMessage();
         MimeMessageHelper messageHelper = new MimeMessageHelper(message, true);
         messageHelper.setFrom(emailSenderAddress);
-        //messageHelper.setTo(person.getEmail());
-        messageHelper.setTo("andreyhilj+awesomeEventsDev@gmail.com");
+        messageHelper.setTo(person.getEmail());
+        //messageHelper.setTo("andreyhilj+awesomeEventsDev@gmail.com");
         messageHelper.setSubject("Invitation to " + event.getName());
 
         InputStreamSource imageSource = convertBufferedImageToInputStreamSource(
