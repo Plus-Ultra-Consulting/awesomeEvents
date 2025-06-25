@@ -1,7 +1,6 @@
 package fr.leplusultra.awesomeevents.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import fr.leplusultra.awesomeevents.util.UserRole;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.*;
@@ -13,7 +12,7 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @ToString
-public class UserDTO {
+public class PersonDTO {
     private int id;
 
     @NotEmpty
@@ -22,15 +21,20 @@ public class UserDTO {
     @NotEmpty
     private String lastName;
 
-    @NotEmpty
     @Email
+    @NotEmpty
     @Setter(AccessLevel.NONE)
     private String email;
 
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm")
     private LocalDateTime createdAt;
 
-    private UserRole role;
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm")
+    private LocalDateTime securityCodeActivatedAt;
+
+    private int eventId;
+
+    private String securityCode;
 
     public void setEmail(String email) {
         this.email = email != null ? email.toLowerCase() : null;

@@ -19,7 +19,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -37,7 +37,7 @@ public class EventController {
         this.userService = userService;
     }
 
-    @PostMapping("/create")
+    @PostMapping()
     public ResponseEntity<Map<String, Object>> create(@RequestBody @Valid EventDTO eventDTO, BindingResult bindingResult, Authentication authentication) {
         User user = userService.findByEmail(authentication.getName());
 
@@ -63,7 +63,7 @@ public class EventController {
     }
 
     @GetMapping
-    public EventsResponse getEvents(Authentication authentication) {
+    public EventsResponse getAll(Authentication authentication) {
         User user = userService.findByEmail(authentication.getName());
 
         if (user == null) {
@@ -73,9 +73,29 @@ public class EventController {
         return new EventsResponse(eventService.findAllByUserId(user.getId()).stream().map(eventService::convertToEventDTO).toList());
     }
 
+    @GetMapping("/{id}")
+    public EventDTO getOne(@PathVariable int id, Authentication authentication) {
+        User user = userService.findByEmail(authentication.getName());
 
-    @PostMapping("/edit")
-    public ResponseEntity<HttpStatus> editEvent(@RequestBody @Valid EventDTO eventDTO, BindingResult bindingResult, Authentication authentication) {
+        if (user == null) {
+            throw new UserException("Authenticated user not found");
+        }
+
+        if (id == 0){
+            throw new EventException("Event Id must be provided");
+        }
+
+        Event event = eventService.findById(id);
+
+        if (!event.getUser().equals(user)){
+            throw new EventException("Event not found for authenticated user");
+        }
+
+        return eventService.convertToEventDTO(event);
+    }
+
+    @PatchMapping()
+    public ResponseEntity<HttpStatus> edit(@RequestBody @Valid EventDTO eventDTO, BindingResult bindingResult, Authentication authentication) {
         User user = userService.findByEmail(authentication.getName());
         Event event = eventService.findById(eventDTO.getId());
 
@@ -83,7 +103,7 @@ public class EventController {
             throw new UserException("Authenticated user not found");
         }
 
-        if (event == null || event.getUser() != user){
+        if (event == null || event.getUser() != user) {
             throw new EventException("Event not found for authenticated user");
         }
 
@@ -102,12 +122,12 @@ public class EventController {
         return ResponseEntity.ok(HttpStatus.OK);
     }
 
-    @PostMapping("/delete")
-    public ResponseEntity<HttpStatus> deleteEvent(@RequestBody EventDTO eventDTO, Authentication authentication) {
+    @DeleteMapping()
+    public ResponseEntity<HttpStatus> delete(@RequestBody EventDTO eventDTO, Authentication authentication) {
         User user = userService.findByEmail(authentication.getName());
         Event event = eventService.findById(eventDTO.getId());
 
-        if (event == null || event.getUser() != user){
+        if (event == null || event.getUser() != user) {
             throw new EventException("Event not found for current user");
         }
 
@@ -117,13 +137,13 @@ public class EventController {
 
     @ExceptionHandler
     private ResponseEntity<ErrorResponse> handleEventException(EventException eventException) {
-        ErrorResponse response = new ErrorResponse(eventException.getMessage(), new Date());
+        ErrorResponse response = new ErrorResponse(eventException.getMessage(), LocalDateTime.now());
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler
     private ResponseEntity<ErrorResponse> handleUserException(UserException userException) {
-        ErrorResponse response = new ErrorResponse(userException.getMessage(), new Date());
+        ErrorResponse response = new ErrorResponse(userException.getMessage(), LocalDateTime.now());
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
 }

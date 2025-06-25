@@ -10,7 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -37,16 +37,16 @@ public class EventRepositoryTest {
         user.setFirstName("First");
         user.setLastName("Last");
         user.setEmail("first@example.com");
-        user.setCreatedAt(new Date());
+        user.setCreatedAt(LocalDateTime.now());
         user.setRole(UserRole.NETWORK_OWNER);
 
         User savedUser = userRepository.save(user);
 
         Event event = new Event();
         event.setName("eventName");
-        event.setCreatedAt(new Date());
+        event.setCreatedAt(LocalDateTime.now());
         event.setPlace("locationName");
-        event.setCreatedAt(new Date());
+        event.setCreatedAt(LocalDateTime.now());
         event.setUser(savedUser);
 
         Event savedEvent = eventRepository.save(event);

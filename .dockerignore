@@ -1,0 +1,29 @@
+# Ignore build output directories
+target/**
+!target/*.jar
+bin/
+
+# Ignore IDE files
+.vscode/
+.idea/
+*.iml
+
+# Ignore Git files
+.git
+.gitignore
+
+# Ignore Maven wrapper files (optional)
+.mvn/
+
+# Ignore environment files
+*.env
+
+# Ignore logs
+*.log
+
+# Ignore OS generated files
+.DS_Store
+Thumbs.db
+
+# Ignore temporary files
+*.tmp

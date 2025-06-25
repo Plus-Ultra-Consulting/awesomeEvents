@@ -15,7 +15,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 @Component
@@ -40,7 +40,7 @@ public class JwtFilter extends OncePerRequestFilter {
         String tokenStr = authHeader.substring(7);
         Optional<Token> tokenOptional = tokenRepository.findByToken(tokenStr);
 
-        if (tokenOptional.isEmpty() || tokenOptional.get().getExpiresAt().before(new Date())) {
+        if (tokenOptional.isEmpty() || tokenOptional.get().getExpiresAt().isBefore(LocalDateTime.now())) {
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             response.getWriter().write("Token expired or invalid. Please login.");
             return;
