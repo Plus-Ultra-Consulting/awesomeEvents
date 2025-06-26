@@ -87,7 +87,7 @@ MAIL_USERNAME=user@example.com
 MAIL_PASSWORD=securePassword123
 MAIL_SENDER=user@example.com
 
-FRONTEND_URL=http://localhost:5173
+FRONTEND_URL=http://localhost:3000
 ```
 
 ---
@@ -186,7 +186,7 @@ MAIL_USERNAME=user@example.com
 MAIL_PASSWORD=securePassword123
 MAIL_SENDER=user@example.com
 
-FRONTEND_URL=http://localhost:5173
+FRONTEND_URL=http://localhost:3000
 ```
 
 ---
