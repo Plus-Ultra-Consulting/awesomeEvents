@@ -17,20 +17,14 @@ services:
   backend:
     build: .
     environment:
-      SERVER_PORT: ${SERVER_PORT}
-      DB_DRIVER: ${DB_DRIVER}
-      DB_BASE: ${DB_BASE}
-      DB_URL: ${DB_URL}
       DB_NAME: ${DB_NAME}
       DB_USERNAME: ${DB_USERNAME}
       DB_PASSWORD: ${DB_PASSWORD}
-      HIBERNATE_DIALECT: ${HIBERNATE_DIALECT}
       MAIL_HOST: ${MAIL_HOST}
       MAIL_PORT: ${MAIL_PORT}
       MAIL_USERNAME: ${MAIL_USERNAME}
       MAIL_PASSWORD: ${MAIL_PASSWORD}
       MAIL_SENDER: ${MAIL_SENDER}
-      FRONTEND_URL: ${FRONTEND_URL}
     ports:
       - "8080:8080"
     depends_on:
