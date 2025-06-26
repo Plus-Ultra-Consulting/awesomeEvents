@@ -64,9 +64,9 @@ Then, in the same folder, create `.env` file with following the content.
 In order for email service to work, you will need to adjust the configuration to your values.
 
 ```dotenv
-DB_NAME=example
-DB_USERNAME=postgres
-DB_PASSWORD=securePassword123
+DB_NAME=awesomeEvents
+DB_USERNAME=awesomeEvents
+DB_PASSWORD=awesomeEvents
 
 MAIL_HOST=mail.example.com
 MAIL_PORT=587
@@ -154,9 +154,9 @@ In project root folder, create `.env` file with the following content.
 (In order for email service to work, you will need to adjust the configuration to your values.)
 
 ```dotenv
-DB_NAME=example
-DB_USERNAME=postgres
-DB_PASSWORD=securePassword123
+DB_NAME=awesomeEvents
+DB_USERNAME=awesomeEvents
+DB_PASSWORD=awesomeEvents
 
 MAIL_HOST=mail.example.com
 MAIL_PORT=587
@@ -210,6 +210,7 @@ and configure everything there.
 
 Some variables must be set up for the application to work properly.
 Except the variables that have default values.
+Also, adjust `compose.yaml` if you aren't using basic configuration.
 
 | Variable              | Description                                                     | Example                                 | Default                                 |
 |-----------------------|-----------------------------------------------------------------|-----------------------------------------|-----------------------------------------|
