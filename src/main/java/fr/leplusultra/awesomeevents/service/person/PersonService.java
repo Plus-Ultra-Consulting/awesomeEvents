@@ -1,12 +1,15 @@
 package fr.leplusultra.awesomeevents.service.person;
 
 import fr.leplusultra.awesomeevents.dto.PersonDTO;
+import fr.leplusultra.awesomeevents.model.event.Event;
 import fr.leplusultra.awesomeevents.model.person.Person;
 import fr.leplusultra.awesomeevents.repositories.person.IPersonRepository;
+import fr.leplusultra.awesomeevents.util.PersonValidator;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.BindingResult;
 
 import java.security.SecureRandom;
 import java.time.LocalDateTime;
@@ -17,11 +20,13 @@ import java.util.List;
 public class PersonService {
     private final IPersonRepository personRepository;
     private final ModelMapper modelMapper;
+    private final PersonValidator personValidator;
 
     @Autowired
-    public PersonService(IPersonRepository personRepository, ModelMapper modelMapper) {
+    public PersonService(IPersonRepository personRepository, ModelMapper modelMapper, PersonValidator personValidator) {
         this.personRepository = personRepository;
         this.modelMapper = modelMapper;
+        this.personValidator = personValidator;
     }
 
     @Transactional
@@ -31,13 +36,10 @@ public class PersonService {
         return personRepository.save(person).getId();
     }
 
-    public Person findByEmail(String email) {
-        return personRepository.findByEmail(email).orElse(null);
-    }
-
     public Person findByEmailAndEventId(String email, int eventId) {
         return personRepository.findByEmailAndEventId(email, eventId).orElse(null);
     }
+
     public Person convertToPerson(PersonDTO personDTO) {
         return modelMapper.map(personDTO, Person.class);
     }
@@ -70,15 +72,49 @@ public class PersonService {
         personRepository.save(person);
     }
 
-    public Person findBySecurityCode(String code){
+    @Transactional
+    public Person prepareNewPerson(PersonDTO personDTO, Event event, BindingResult bindingResult) {
+        Person person = convertToPerson(personDTO);
+        person.setEvent(event);
+
+        String code = generateUniqueSecurityCode();
+        person.setSecurityCode(code);
+        person.setSecurityCodeActivatedAt(null);
+
+        personValidator.validate(person, bindingResult);
+        return person;
+    }
+
+    @Transactional
+    public void updatePerson(Person person, PersonDTO personDTO, BindingResult bindingResult) {
+        person.setFirstName(personDTO.getFirstName());
+        person.setLastName(personDTO.getLastName());
+        person.setEmail(personDTO.getEmail());
+
+        personValidator.validate(person, bindingResult);
+
+        if (!bindingResult.hasErrors()) {
+            save(person);
+        }
+    }
+
+    public Person findBySecurityCode(String code) {
         return personRepository.findBySecurityCode(code).orElse(null);
     }
 
-    public String generateSecurityCode(){
+    private String generateUniqueSecurityCode() {
+        String code = generateSecurityCode();
+        while (findBySecurityCode(code) != null) {
+            code = generateSecurityCode();
+        }
+        return code;
+    }
+
+    private String generateSecurityCode() {
         String chars = "1234567890ABCDEFGHIJKLMNOPQRSTUVWXYZ";
         SecureRandom random = new SecureRandom();
         StringBuilder code = new StringBuilder();
-        for (int i = 0; i < 6; i++){
+        for (int i = 0; i < 6; i++) {
             code.append(chars.charAt(random.nextInt(chars.length())));
         }
         return code.toString();

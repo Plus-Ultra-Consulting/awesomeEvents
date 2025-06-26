@@ -20,7 +20,6 @@ import java.util.Optional;
 
 @Component
 public class JwtFilter extends OncePerRequestFilter {
-
     private final ITokenRepository tokenRepository;
 
     @Autowired
@@ -30,7 +29,7 @@ public class JwtFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        if (request.getMethod().equals("OPTIONS")){
+        if (request.getMethod().equals("OPTIONS")) {
             filterChain.doFilter(request, response);
             return;
         }

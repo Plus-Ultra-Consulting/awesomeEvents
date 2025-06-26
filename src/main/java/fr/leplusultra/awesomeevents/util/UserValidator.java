@@ -1,19 +1,21 @@
 package fr.leplusultra.awesomeevents.util;
 
 import fr.leplusultra.awesomeevents.model.user.User;
-import fr.leplusultra.awesomeevents.service.user.UserService;
+import fr.leplusultra.awesomeevents.repositories.user.IUserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 
+import java.util.Optional;
+
 @Component
 public class UserValidator implements Validator {
-    private final UserService userService;
+    private final IUserRepository userRepository;
 
     @Autowired
-    public UserValidator(UserService userService) {
-        this.userService = userService;
+    public UserValidator(IUserRepository userRepository) {
+        this.userRepository = userRepository;
     }
 
     @Override
@@ -24,9 +26,9 @@ public class UserValidator implements Validator {
     @Override
     public void validate(Object target, Errors errors) {
         User user = (User) target;
-        User existingUser = userService.findByEmail(user.getEmail());
+        Optional<User> existingUser = userRepository.findByEmail(user.getEmail());
 
-        if (existingUser != null && existingUser.getId() != user.getId()) {
+        if (existingUser.isPresent() && existingUser.get().getId() != user.getId()) {
             errors.rejectValue("email", "", "User with this email is already in database");
         }
     }

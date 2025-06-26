@@ -18,10 +18,11 @@ public class QRCodeService {
     @Value("${qrcode.size}")
     private int qrCodeSize;
 
-    public BitMatrix generateBasicQRCode(String data) throws WriterException{
+    public BitMatrix generateBasicQRCode(String data) throws WriterException {
         return new MultiFormatWriter().encode(data, BarcodeFormat.QR_CODE, qrCodeSize, qrCodeSize);
     }
-    public BufferedImage convertToImage(BitMatrix bitMatrix){
+
+    public BufferedImage convertToImage(BitMatrix bitMatrix) {
         return MatrixToImageWriter.toBufferedImage(bitMatrix, new MatrixToImageConfig(MatrixToImageConfig.BLACK, MatrixToImageConfig.WHITE));
     }
 }

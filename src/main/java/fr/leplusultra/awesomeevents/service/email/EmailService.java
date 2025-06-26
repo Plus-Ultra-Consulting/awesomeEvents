@@ -40,7 +40,7 @@ public class EmailService {
         this.qrCodeService = qrCodeService;
     }
 
-    public void sendEmailWithSecurityCode(Person person) throws MessagingException, WriterException, IOException {
+    public void sendEmailWithSecurityCodeToPerson(Person person) throws MessagingException, WriterException, IOException {
         Event event = person.getEvent();
 
         MimeMessage message = mailSender.createMimeMessage();
@@ -70,14 +70,14 @@ public class EmailService {
         mailSender.send(message);
     }
 
-    public void sendOTPToUser(User user) throws MessagingException {
+    public void sendEmailWithOTPToUser(User user) throws MessagingException {
         MimeMessage message = mailSender.createMimeMessage();
         MimeMessageHelper messageHelper = new MimeMessageHelper(message, true);
         messageHelper.setFrom(emailSenderAddress);
         messageHelper.setTo(user.getEmail());
         messageHelper.setSubject("One-Time Code to log in");
 
-        String htmlMsg = "<h3>Your one-time code to log in is: <b> " + user.getOTP().getCode() + "</b></h3>";
+        String htmlMsg = "<h3>Your one-time code to log in is: <b> " + user.getOtp().getCode() + "</b></h3>";
 
         messageHelper.setText(htmlMsg, true);
 

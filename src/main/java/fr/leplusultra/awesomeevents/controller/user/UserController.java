@@ -55,10 +55,8 @@ public class UserController {
             Error.returnErrorToClient(bindingResult);
         }
 
-        int createdEventId = registrationService.register(user);
-        Map<String, Object> response = new HashMap<>();
-        response.put("id", createdEventId);
-        return new ResponseEntity<>(response, HttpStatus.CREATED);
+        int createdUserId = registrationService.register(user);
+        return ResponseEntity.status(HttpStatus.CREATED).body(Map.of("id", createdUserId));
     }
 
     @PostMapping("/login")
@@ -66,9 +64,7 @@ public class UserController {
         String email = request.get("username");
         String otpCode = request.get("otp");
 
-        if (email == null || otpCode == null) {
-            throw new UserException("Invalid login request");
-        }
+        validateLoginRequest(email, otpCode);
 
         User user = userService.findByEmail(email);
 
@@ -87,7 +83,7 @@ public class UserController {
 
         String token = JwtUtil.generateToken(email);
 
-        LocalDateTime expiresAt = LocalDateTime.now().plusDays(JwtUtil.EXPIRATION_TIME);
+        LocalDateTime expiresAt = LocalDateTime.now().plusDays(JwtUtil.expirationTime);
 
         tokenService.saveOrUpdateToken(user, token, expiresAt);
 
@@ -107,10 +103,9 @@ public class UserController {
             throw new UserException("User not found");
         }
 
-        otpService.createNewOneTimeCode(user);
-
         try {
-            emailService.sendOTPToUser(user);
+            otpService.createNewOneTimeCode(user);
+            emailService.sendEmailWithOTPToUser(user);
         } catch (MessagingException e) {
             throw new UserException("Error while sending email to user");
         }
@@ -131,35 +126,43 @@ public class UserController {
 
     @PatchMapping()
     public ResponseEntity<HttpStatus> edit(@RequestBody @Valid UserDTO userDTO, BindingResult bindingResult, Authentication authentication) {
-        User user = userService.findByEmail(authentication.getName());
+        User user = getAuthenticatedUser(authentication);
 
         User editedUser = userService.convertToUser(userDTO);
         editedUser.setId(user.getId());
 
         userValidator.validate(editedUser, bindingResult);
 
-        user.setFirstName(editedUser.getFirstName());
-        user.setLastName(editedUser.getLastName());
-        user.setEmail(editedUser.getEmail());
-
         if (bindingResult.hasErrors()) {
             Error.returnErrorToClient(bindingResult);
         }
 
-        userService.save(user);
+        userService.update(user, editedUser);
         return ResponseEntity.ok(HttpStatus.OK);
     }
 
     @DeleteMapping()
     public ResponseEntity<HttpStatus> delete(Authentication authentication) {
+        User user = getAuthenticatedUser(authentication);
+
+        userService.deleteById(user.getId());
+        return ResponseEntity.ok(HttpStatus.OK);
+    }
+
+    private void validateLoginRequest(String email, String optCode) {
+        if (email == null || optCode == null || email.isBlank() || optCode.isBlank()) {
+            throw new UserException("Invalid login request");
+        }
+    }
+
+    private User getAuthenticatedUser(Authentication authentication) {
         User user = userService.findByEmail(authentication.getName());
 
         if (user == null) {
             throw new UserException("Authenticated user not found");
         }
 
-        userService.deleteById(user.getId());
-        return ResponseEntity.ok(HttpStatus.OK);
+        return user;
     }
 
     @ExceptionHandler

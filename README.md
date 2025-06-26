@@ -70,8 +70,6 @@ Then, in the same folder, create `.env` file with following the content.
 In order for email service to work, you will need to adjust the configuration to your values.
 
 ```dotenv
-SERVER_PORT=8080
-
 DB_DRIVER=org.postgresql.Driver
 DB_BASE=postgresql
 DB_URL=postgres:5432
@@ -169,8 +167,6 @@ In project root folder, create `.env` file with the following content.
 (In order for email service to work, you will need to adjust the configuration to your values.)
 
 ```dotenv
-SERVER_PORT=8080
-
 DB_DRIVER=org.postgresql.Driver
 DB_BASE=postgresql
 DB_URL=postgres:5432
@@ -235,28 +231,30 @@ and configure everything there.
 Some variables must be set up for the application to work properly.
 Except the variables that have default values.
 
-| Variable             | Description                                                     | Example                                 | Default |
-|----------------------|-----------------------------------------------------------------|-----------------------------------------|---------|
-| SERVER_PORT          | Port where the server is run                                    | 8080                                    | 8080    |
-| DB_DRIVER            | Driver of used database                                         | org.postgresql.Driver                   | -       |
-| DB_BASE              | Base source to your database                                    | postgresql                              | -       |
-| DB_URL               | URL to your database                                            | postgres:5432                           | -       |
-| DB_NAME              | Name of your database                                           | example-database                        | -       |
-| DB_USERNAME          | Username to access your database                                | postgres                                | -       |
-| DB_PASSWORD          | Password to access your database                                | securePassword123                       | -       |
-| HIBERNATE_DIALECT    | Dialect of hibernate to work with your database                 | org.hibernate.dialect.PostgreSQLDialect | -       |
-| HIBERNATE_SHOW_SQL   | Show sql queries in output                                      | false                                   | true    |
-| HIBERNATE_FORMAT_SQL | Format sql queries in output                                    | false                                   | true    |
-| DB_FLAG              | Database start-up flag (`update`, `create`, `validate`, `none`) | validate                                | create  |
-| MAIL_HOST            | Your mail server host                                           | mail.example.net                        | -       |
-| MAIL_PORT            | Your mail server port                                           | 587                                     | -       |
-| MAIL_USERNAME        | Your mail username                                              | user@example.com                        | -       |
-| MAIL_PASSWORD        | Your mail password                                              | securePassword123                       | -       |
-| MAIL_SENDER          | Your mail address from which emails are sent                    | user@example.com                        | -       |
-| MAIL_SMTP_AUTH       | Requires SMTP auth to send emails                               | true                                    | true    |
-| MAIL_SMTP_STARTTLS   | Enable STARTTLS to secure the connection                        | true                                    | true    |
-| QRCODE_SIZE          | Size of generated QR-Codes                                      | 500                                     | 500     |
-| QRCODE_IMAGE_FORMAT  | Format of QR-Code image                                         | jpg                                     | jpg     |
-| FRONTEND_URL         | URL to your frontend server                                     | http://localhost:3000                   | -       |
+| Variable              | Description                                                     | Example                                 | Default               |
+|-----------------------|-----------------------------------------------------------------|-----------------------------------------|-----------------------|
+| SERVER_PORT           | Port where the server is run                                    | 8080                                    | 8080                  |
+| DB_DRIVER             | Driver of used database                                         | org.postgresql.Driver                   | -                     |
+| DB_BASE               | Base source to your database                                    | postgresql                              | -                     |
+| DB_URL                | URL to your database                                            | postgres:5432                           | -                     |
+| DB_NAME               | Name of your database                                           | example-database                        | -                     |
+| DB_USERNAME           | Username to access your database                                | postgres                                | -                     |
+| DB_PASSWORD           | Password to access your database                                | securePassword123                       | -                     |
+| HIBERNATE_DIALECT     | Dialect of hibernate to work with your database                 | org.hibernate.dialect.PostgreSQLDialect | -                     |
+| HIBERNATE_SHOW_SQL    | Show sql queries in output                                      | false                                   | true                  |
+| HIBERNATE_FORMAT_SQL  | Format sql queries in output                                    | false                                   | true                  |
+| DB_FLAG               | Database start-up flag (`update`, `create`, `validate`, `none`) | validate                                | create                |
+| MAIL_HOST             | Your mail server host                                           | mail.example.net                        | -                     |
+| MAIL_PORT             | Your mail server port                                           | 587                                     | -                     |
+| MAIL_USERNAME         | Your mail username                                              | user@example.com                        | -                     |
+| MAIL_PASSWORD         | Your mail password                                              | securePassword123                       | -                     |
+| MAIL_SENDER           | Your mail address from which emails are sent                    | user@example.com                        | -                     |
+| MAIL_SMTP_AUTH        | Requires SMTP auth to send emails                               | true                                    | true                  |
+| MAIL_SMTP_STARTTLS    | Enable STARTTLS to secure the connection                        | true                                    | true                  |
+| QRCODE_SIZE           | Size of generated QR-Codes                                      | 500                                     | 500                   |
+| QRCODE_IMAGE_FORMAT   | Format of QR-Code image                                         | jpg                                     | jpg                   |
+| FRONTEND_URL          | URL to your frontend server                                     | http://localhost:3000                   | http://localhost:3000 |
+| TOKEN_EXPIRATION_TIME | Expiration time of security token (in days)                     | 3                                       | 1                     |
+| OTP_EXPIRATION_TIME   | Expiration time of one-time login code (in minutes)             | 60                                      | 15                    |
 
 ---

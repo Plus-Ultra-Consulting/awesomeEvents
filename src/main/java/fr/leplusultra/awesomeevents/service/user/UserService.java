@@ -11,20 +11,17 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Service
 @Transactional(readOnly = true)
 public class UserService {
     private final ModelMapper modelMapper;
     private final IUserRepository userRepository;
-    private final PasswordEncoder passwordEncoder;
 
     @Autowired
     public UserService(ModelMapper modelMapper, IUserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.modelMapper = modelMapper;
         this.userRepository = userRepository;
-        this.passwordEncoder = passwordEncoder;
     }
 
     @Transactional
@@ -32,14 +29,6 @@ public class UserService {
         user.setRole(UserRole.REGULAR);
         user.setCreatedAt(LocalDateTime.now());
         return userRepository.save(user).getId();
-    }
-
-    public List<User> findAll() {
-        return userRepository.findAll();
-    }
-
-    public User findById(int id) {
-        return userRepository.findById(id).get();
     }
 
     public User findByEmail(String email) {
@@ -54,6 +43,15 @@ public class UserService {
     @Transactional
     public void save(User user) {
         userRepository.save(user);
+    }
+
+    @Transactional
+    public void update(User user, User editedUser) {
+        user.setFirstName(editedUser.getFirstName());
+        user.setLastName(editedUser.getLastName());
+        user.setEmail(editedUser.getEmail());
+
+        save(user);
     }
 
     public User convertToUser(UserDTO userDTO) {

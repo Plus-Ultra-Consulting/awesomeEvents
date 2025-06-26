@@ -81,13 +81,13 @@ public class EventController {
             throw new UserException("Authenticated user not found");
         }
 
-        if (id == 0){
+        if (id == 0) {
             throw new EventException("Event Id must be provided");
         }
 
         Event event = eventService.findById(id);
 
-        if (!event.getUser().equals(user)){
+        if (!event.getUser().equals(user)) {
             throw new EventException("Event not found for authenticated user");
         }
 
@@ -96,43 +96,46 @@ public class EventController {
 
     @PatchMapping()
     public ResponseEntity<HttpStatus> edit(@RequestBody @Valid EventDTO eventDTO, BindingResult bindingResult, Authentication authentication) {
-        User user = userService.findByEmail(authentication.getName());
-        Event event = eventService.findById(eventDTO.getId());
+        User user = getAuthenticatedUser(authentication);
+        Event event = getUserEvent(eventDTO.getId(), user);
 
-        if (user == null) {
-            throw new UserException("Authenticated user not found");
-        }
-
-        if (event == null || event.getUser() != user) {
-            throw new EventException("Event not found for authenticated user");
-        }
-
-        Event eventToEdit = eventService.convertToEvent(eventDTO);
-        event.setName(eventToEdit.getName());
-        event.setPlace(eventToEdit.getPlace());
-        event.setStartAt(eventToEdit.getStartAt());
-
-        eventValidator.validate(event, bindingResult);
+        eventService.updateEvent(event, eventDTO, bindingResult);
 
         if (bindingResult.hasErrors()) {
             Error.returnErrorToClient(bindingResult);
         }
 
-        eventService.save(event);
         return ResponseEntity.ok(HttpStatus.OK);
     }
 
     @DeleteMapping()
     public ResponseEntity<HttpStatus> delete(@RequestBody EventDTO eventDTO, Authentication authentication) {
-        User user = userService.findByEmail(authentication.getName());
-        Event event = eventService.findById(eventDTO.getId());
+        User user = getAuthenticatedUser(authentication);
+        Event event = getUserEvent(eventDTO.getId(), user);
 
-        if (event == null || event.getUser() != user) {
-            throw new EventException("Event not found for current user");
+        eventService.deleteById(event.getId());
+
+        return ResponseEntity.ok(HttpStatus.OK);
+    }
+
+    private User getAuthenticatedUser(Authentication authentication) {
+        User user = userService.findByEmail(authentication.getName());
+
+        if (user == null) {
+            throw new UserException("Authenticated user not found");
         }
 
-        eventService.deleteById(eventDTO.getId());
-        return ResponseEntity.ok(HttpStatus.OK);
+        return user;
+    }
+
+    private Event getUserEvent(int eventId, User user) {
+        Event event = eventService.findById(eventId);
+
+        if (event == null || !event.getUser().equals(user)) {
+            throw new EventException("Event not found for authenticated user");
+        }
+
+        return event;
     }
 
     @ExceptionHandler

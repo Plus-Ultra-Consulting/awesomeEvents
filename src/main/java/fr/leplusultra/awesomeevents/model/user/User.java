@@ -16,7 +16,7 @@ import java.util.List;
 @AllArgsConstructor
 @Getter
 @Setter
-@ToString(exclude = {"events", "token"})
+@ToString(exclude = {"events", "token", "otp"})
 @Table(name = "users")
 public class User {
     @Id
@@ -48,7 +48,7 @@ public class User {
     private Token token;
 
     @OneToOne(fetch = FetchType.LAZY, mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    private OTP OTP;
+    private OTP otp;
 
     public void setEmail(String email) {
         this.email = email != null ? email.toLowerCase() : null;

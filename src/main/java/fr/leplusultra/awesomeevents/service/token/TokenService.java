@@ -13,7 +13,7 @@ import java.util.Optional;
 @Service
 @Transactional(readOnly = true)
 public class TokenService {
-    ITokenRepository tokenRepository;
+    private final ITokenRepository tokenRepository;
 
     @Autowired
     public TokenService(ITokenRepository tokenRepository) {
