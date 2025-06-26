@@ -3,6 +3,7 @@ package fr.leplusultra.awesomeevents.service.email;
 import com.google.zxing.WriterException;
 import fr.leplusultra.awesomeevents.model.event.Event;
 import fr.leplusultra.awesomeevents.model.person.Person;
+import fr.leplusultra.awesomeevents.model.user.User;
 import fr.leplusultra.awesomeevents.service.qrcode.QRCodeService;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
@@ -46,7 +47,6 @@ public class EmailService {
         MimeMessageHelper messageHelper = new MimeMessageHelper(message, true);
         messageHelper.setFrom(emailSenderAddress);
         messageHelper.setTo(person.getEmail());
-        //messageHelper.setTo("andreyhilj+awesomeEventsDev@gmail.com");
         messageHelper.setSubject("Invitation to " + event.getName());
 
         InputStreamSource imageSource = convertBufferedImageToInputStreamSource(
@@ -66,6 +66,20 @@ public class EmailService {
         messageHelper.setText(htmlMsg, true);
 
         messageHelper.addInline(cid, imageSource, "image/" + imageFormat);
+
+        mailSender.send(message);
+    }
+
+    public void sendOTPToUser(User user) throws MessagingException {
+        MimeMessage message = mailSender.createMimeMessage();
+        MimeMessageHelper messageHelper = new MimeMessageHelper(message, true);
+        messageHelper.setFrom(emailSenderAddress);
+        messageHelper.setTo(user.getEmail());
+        messageHelper.setSubject("One-Time Code to log in");
+
+        String htmlMsg = "<h3>Your one-time code to log in is: <b> " + user.getOTP().getCode() + "</b></h3>";
+
+        messageHelper.setText(htmlMsg, true);
 
         mailSender.send(message);
     }

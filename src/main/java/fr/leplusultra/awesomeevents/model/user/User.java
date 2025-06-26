@@ -1,6 +1,7 @@
 package fr.leplusultra.awesomeevents.model.user;
 
 import fr.leplusultra.awesomeevents.model.event.Event;
+import fr.leplusultra.awesomeevents.model.otp.OTP;
 import fr.leplusultra.awesomeevents.model.token.Token;
 import fr.leplusultra.awesomeevents.util.UserRole;
 import jakarta.persistence.*;
@@ -45,6 +46,9 @@ public class User {
 
     @OneToOne(fetch = FetchType.LAZY, mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private Token token;
+
+    @OneToOne(fetch = FetchType.LAZY, mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private OTP OTP;
 
     public void setEmail(String email) {
         this.email = email != null ? email.toLowerCase() : null;

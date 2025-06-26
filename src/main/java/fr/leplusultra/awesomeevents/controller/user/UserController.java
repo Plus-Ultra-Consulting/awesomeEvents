@@ -2,13 +2,17 @@ package fr.leplusultra.awesomeevents.controller.user;
 
 import fr.leplusultra.awesomeevents.dto.ErrorResponse;
 import fr.leplusultra.awesomeevents.dto.UserDTO;
+import fr.leplusultra.awesomeevents.model.otp.OTP;
 import fr.leplusultra.awesomeevents.model.user.User;
 import fr.leplusultra.awesomeevents.security.JwtUtil;
+import fr.leplusultra.awesomeevents.service.email.EmailService;
+import fr.leplusultra.awesomeevents.service.otp.OTPService;
 import fr.leplusultra.awesomeevents.service.token.TokenService;
 import fr.leplusultra.awesomeevents.service.user.UserService;
 import fr.leplusultra.awesomeevents.util.Error;
 import fr.leplusultra.awesomeevents.util.UserValidator;
 import fr.leplusultra.awesomeevents.util.exception.UserException;
+import jakarta.mail.MessagingException;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -29,13 +33,17 @@ public class UserController {
     private final UserService userService;
     private final UserValidator userValidator;
     private final TokenService tokenService;
+    private final OTPService otpService;
+    private final EmailService emailService;
 
     @Autowired
-    public UserController(UserService registrationService, UserService userService, UserValidator userValidator, TokenService tokenService) {
+    public UserController(UserService registrationService, UserService userService, UserValidator userValidator, TokenService tokenService, OTPService otpService, EmailService emailService) {
         this.registrationService = registrationService;
         this.userService = userService;
         this.userValidator = userValidator;
         this.tokenService = tokenService;
+        this.otpService = otpService;
+        this.emailService = emailService;
     }
 
     @PostMapping("/registration")
@@ -56,11 +64,26 @@ public class UserController {
     @PostMapping("/login")
     public ResponseEntity<Map<String, Object>> login(@RequestBody Map<String, String> request) {
         String email = request.get("username");
+        String otpCode = request.get("otp");
+
+        if (email == null || otpCode == null) {
+            throw new UserException("Invalid login request");
+        }
+
         User user = userService.findByEmail(email);
 
         if (user == null) {
             throw new UserException("User not found");
         }
+
+        OTP otp = otpService.findOtpByUserId(user.getId());
+
+        if (otp == null || otp.getCode() == null || !otp.getCode().equals(otpCode) ||
+                otp.getExpiresAt().isBefore(LocalDateTime.now())) {
+            throw new UserException("Invalid one-time code");
+        }
+
+        otpService.invalidateCode(user);
 
         String token = JwtUtil.generateToken(email);
 
@@ -73,6 +96,26 @@ public class UserController {
         response.put("token_type", "Bearer");
         response.put("expires_at", expiresAt.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")));
         return ResponseEntity.ok(response);
+    }
+
+    @PostMapping("/sendOtp")
+    public ResponseEntity<HttpStatus> sendOtp(@RequestBody Map<String, String> request) {
+        String email = request.get("username");
+        User user = userService.findByEmail(email);
+
+        if (user == null) {
+            throw new UserException("User not found");
+        }
+
+        otpService.createNewOneTimeCode(user);
+
+        try {
+            emailService.sendOTPToUser(user);
+        } catch (MessagingException e) {
+            throw new UserException("Error while sending email to user");
+        }
+
+        return ResponseEntity.ok(HttpStatus.OK);
     }
 
     @GetMapping()

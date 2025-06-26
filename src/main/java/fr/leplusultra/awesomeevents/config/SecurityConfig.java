@@ -50,7 +50,7 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(AbstractHttpConfigurer::disable)
-                .authorizeHttpRequests(auth -> auth.requestMatchers("/user/registration", "/user/login").permitAll()
+                .authorizeHttpRequests(auth -> auth.requestMatchers("/user/registration", "/user/login", "/user/sendOtp").permitAll()
                         .anyRequest().authenticated()
                 )
                 .cors(cors -> cors.configurationSource(request -> {
