@@ -17,9 +17,11 @@ public class UserDTO {
     private int id;
 
     @NotEmpty
+    @Setter(AccessLevel.NONE)
     private String firstName;
 
     @NotEmpty
+    @Setter(AccessLevel.NONE)
     private String lastName;
 
     @NotEmpty
@@ -33,6 +35,14 @@ public class UserDTO {
     private UserRole role;
 
     public void setEmail(String email) {
-        this.email = email != null ? email.toLowerCase() : null;
+        this.email = email != null ? email.toLowerCase().trim() : null;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName.trim();
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName.trim();
     }
 }

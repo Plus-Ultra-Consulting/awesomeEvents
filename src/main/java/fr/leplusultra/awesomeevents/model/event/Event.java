@@ -20,6 +20,8 @@ public class Event {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+
+    @Setter(AccessLevel.NONE)
     private String name;
 
     @Column(name = "creation_date_time")
@@ -27,6 +29,7 @@ public class Event {
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm")
     private LocalDateTime createdAt;
 
+    @Setter(AccessLevel.NONE)
     private String place;
 
     @Column(name = "start_date_time")
@@ -41,4 +44,12 @@ public class Event {
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "event", cascade = CascadeType.ALL)
     private List<Person> people;
+
+    public void setName(String name) {
+        this.name = name.trim();
+    }
+
+    public void setPlace(String place) {
+        this.place = place.trim();
+    }
 }

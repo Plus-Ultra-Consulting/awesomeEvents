@@ -16,12 +16,14 @@ public class EventDTO {
     private int id;
 
     @NotEmpty
+    @Setter(AccessLevel.NONE)
     private String name;
 
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm")
     private LocalDateTime createdAt;
 
     @NotEmpty
+    @Setter(AccessLevel.NONE)
     private String place;
 
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm")

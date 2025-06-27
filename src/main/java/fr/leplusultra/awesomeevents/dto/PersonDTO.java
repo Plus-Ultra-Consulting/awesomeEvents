@@ -16,9 +16,11 @@ public class PersonDTO {
     private int id;
 
     @NotEmpty
+    @Setter(AccessLevel.NONE)
     private String firstName;
 
     @NotEmpty
+    @Setter(AccessLevel.NONE)
     private String lastName;
 
     @Email
@@ -37,6 +39,14 @@ public class PersonDTO {
     private String securityCode;
 
     public void setEmail(String email) {
-        this.email = email != null ? email.toLowerCase() : null;
+        this.email = email != null ? email.toLowerCase().trim() : null;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName.trim();
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName.trim();
     }
 }

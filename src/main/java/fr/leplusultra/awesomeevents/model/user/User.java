@@ -24,9 +24,11 @@ public class User {
     private int id;
 
     @Column(name = "first_name")
+    @Setter(AccessLevel.NONE)
     private String firstName;
 
     @Column(name = "last_name")
+    @Setter(AccessLevel.NONE)
     private String lastName;
 
     @Column(unique = true, nullable = false)
@@ -51,6 +53,14 @@ public class User {
     private OTP otp;
 
     public void setEmail(String email) {
-        this.email = email != null ? email.toLowerCase() : null;
+        this.email = email != null ? email.toLowerCase().trim() : null;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName.trim();
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName.trim();
     }
 }

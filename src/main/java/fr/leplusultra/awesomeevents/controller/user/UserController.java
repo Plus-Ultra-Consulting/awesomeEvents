@@ -61,7 +61,7 @@ public class UserController {
 
     @PostMapping("/login")
     public ResponseEntity<Map<String, Object>> login(@RequestBody Map<String, String> request) {
-        String email = request.get("username");
+        String email = request.get("username").toLowerCase().trim();
         String otpCode = request.get("otp");
 
         validateLoginRequest(email, otpCode);
@@ -96,7 +96,7 @@ public class UserController {
 
     @PostMapping("/sendOtp")
     public ResponseEntity<HttpStatus> sendOtp(@RequestBody Map<String, String> request) {
-        String email = request.get("username");
+        String email = request.get("username").toLowerCase().trim();
         User user = userService.findByEmail(email);
 
         if (user == null) {
