@@ -29,4 +29,12 @@ public class EventDTO {
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm")
     @NotNull
     private LocalDateTime startAt;
+
+    public void setName(String name) {
+        this.name = name.trim();
+    }
+
+    public void setPlace(String place) {
+        this.place = place.trim();
+    }
 }
