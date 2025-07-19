@@ -44,7 +44,7 @@ public class EmailService {
         Event event = person.getEvent();
 
         MimeMessage message = mailSender.createMimeMessage();
-        MimeMessageHelper messageHelper = new MimeMessageHelper(message, true);
+        MimeMessageHelper messageHelper = new MimeMessageHelper(message, true, "UTF-8");
         messageHelper.setFrom(emailSenderAddress);
         messageHelper.setTo(person.getEmail());
         messageHelper.setSubject("Invitation to " + event.getName());
