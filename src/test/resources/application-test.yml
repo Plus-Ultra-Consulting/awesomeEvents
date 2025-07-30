@@ -1,0 +1,38 @@
+spring:
+  datasource:
+    url: jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
+    driver-class-name: org.h2.Driver
+    username: sa
+    password:
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.H2Dialect
+        show_sql: true
+        format_sql: true
+    hibernate:
+      ddl-auto: create-drop
+
+  mail:
+    host: mail.example.host
+    port: 587
+    username: myuser
+    password: secret
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+
+mail:
+  sender:
+    address: test@example.com
+
+qrcode:
+  size: 500
+  image:
+    format: jpg
+
+frontend:
+  url: http://localhost:5173
